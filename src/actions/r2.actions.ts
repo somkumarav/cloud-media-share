@@ -1,8 +1,8 @@
 "use server";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { generateRandomId } from "../../lib/generateRandomId";
+import { GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { uploadToR2 } from "../../lib/uploadToR2";
 import { s3 } from "../../lib/s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export async function getObjectFromR2(key: string) {
   try {
@@ -23,6 +23,41 @@ export async function getObjectFromR2(key: string) {
     return base64;
   } catch (error) {
     console.error("Error retrieving object from R2:", error);
+    throw error;
+  }
+}
+
+export async function listImagesInDirectory(directory: string) {
+  console.log(directory);
+  const command = new ListObjectsV2Command({
+    Bucket: "test",
+    Prefix: "som/",
+  });
+
+  try {
+    const response = await s3.send(command);
+    const objects = response.Contents || [];
+
+    const imageObjects = objects.filter((obj) =>
+      obj.Key?.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp)$/)
+    );
+
+    const imageUrls = await Promise.all(
+      imageObjects.map(async (obj) => {
+        const getObjectCommand = new GetObjectCommand({
+          Bucket: "test",
+          Key: obj.Key,
+        });
+        const url = await getSignedUrl(s3, getObjectCommand, {
+          expiresIn: 3600,
+        });
+        return { key: obj.Key!, url };
+      })
+    );
+
+    return imageUrls;
+  } catch (error) {
+    console.error("Error listing objects in R2:", error);
     throw error;
   }
 }
