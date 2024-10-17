@@ -33,7 +33,7 @@ export async function uploadImageToR2(formData: FormData) {
     throw new Error("No file provided");
   }
 
-  const fileName = `som/${generateRandomId()}`;
+  const fileName = `som/${file.name}`;
   const res = await uploadToR2(file, fileName);
 
   if (res.success) {
@@ -41,4 +41,32 @@ export async function uploadImageToR2(formData: FormData) {
   } else {
     return { success: false, message: "File upload failed" };
   }
+}
+
+export async function uploadImagesToR2(formData: FormData) {
+  const files = formData.getAll("files") as File[];
+  if (files.length === 0) {
+    throw new Error("No files provided");
+  }
+
+  const results = await Promise.all(
+    files.map(async (file) => {
+      const fileName = `som/${file.name}`;
+      const res = await uploadToR2(file, fileName);
+      if (res.success) {
+        return {
+          fileName: fileName,
+          success: true,
+          message: "File uploaded successfully",
+        };
+      } else {
+        return {
+          fileName: fileName,
+          success: false,
+          message: "Failed to upload file",
+        };
+      }
+    })
+  );
+  return results;
 }
