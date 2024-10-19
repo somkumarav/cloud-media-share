@@ -3,6 +3,7 @@ import { GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { uploadToR2 } from "../../lib/uploadToR2";
 import { s3 } from "../../lib/s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { revalidatePath } from "next/cache";
 
 export async function getObjectFromR2(key: string) {
   try {
@@ -103,5 +104,7 @@ export async function uploadImagesToR2(formData: FormData) {
       }
     })
   );
+
+  revalidatePath("/album/[id]", "page");
   return results;
 }
