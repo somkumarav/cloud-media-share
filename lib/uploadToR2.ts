@@ -15,7 +15,7 @@ export const uploadToR2 = async (file: File, fileName: string) => {
     await s3.send(command);
     return { success: true, message: "File uploaded successfully" };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { success: false, message: "File upload failed", error };
   }
 };
