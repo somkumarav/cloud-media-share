@@ -29,8 +29,8 @@ const config: Config = {
         foreground: "#eaa09c",
       },
       destructive: {
-        DEFAULT: "hsl(var(--destructive))",
-        foreground: "hsl(var(--destructive-foreground))",
+        DEFAULT: "#91170c",
+        foreground: "#eaa09c",
       },
       card: {
         DEFAULT: "hsl(var(--card))",
@@ -65,6 +65,18 @@ const config: Config = {
       lg: "1rem",
       xl: "1.25rem",
       full: "1000rem",
+    },
+    animation: {
+      slide: "slide 2.5s linear infinite",
+    },
+    keyframes: {
+      slide: {
+        "0%": { transform: "translateY(100%)", opacity: "0.1" },
+        "15%": { transform: "translateY(0)", opacity: "1" },
+        "30%": { transform: "translateY(0)", opacity: "1" },
+        "45%": { transform: "translateY(-100%)", opacity: "1" },
+        "100%": { transform: "translateY(-100%)", opacity: "0.1" },
+      },
     },
   },
   plugins: [tailwindAnimate],

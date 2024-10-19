@@ -9,7 +9,7 @@ export function CreateNewAlbumButton() {
 
   return (
     <form action={createAlbum}>
-      <Button type='submit' disabled={isPending}>
+      <Button type='submit' disabled={isPending} size='lg'>
         {isPending ? "Creating..." : "Create New Album"}
       </Button>
     </form>
