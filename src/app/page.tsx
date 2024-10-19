@@ -3,7 +3,7 @@ import { Button } from "../components/ui/button";
 
 export default function Home() {
   return (
-    <main className='flex min-h-screen flex-col items-center pt-40 space-y-4'>
+    <main className='flex flex-col items-center pt-40 space-y-4'>
       <div className='text-center space-y-5'>
         <p className='text-7xl'>
           Got some photos to share <br /> with friends and family
