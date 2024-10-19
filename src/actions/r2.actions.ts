@@ -29,10 +29,9 @@ export async function getObjectFromR2(key: string) {
 }
 
 export async function listImagesInDirectory(directory: string) {
-  console.log(directory);
   const command = new ListObjectsV2Command({
     Bucket: "test",
-    Prefix: "som/",
+    Prefix: `${directory}/`,
   });
 
   try {
@@ -81,14 +80,16 @@ export async function uploadImageToR2(formData: FormData) {
 
 export async function uploadImagesToR2(formData: FormData) {
   const files = formData.getAll("files") as File[];
+  const directory = formData.get("directory");
   if (files.length === 0) {
     throw new Error("No files provided");
   }
 
   const results = await Promise.all(
     files.map(async (file) => {
-      const fileName = `som/${file.name}`;
+      const fileName = `${directory}/${file.name}`;
       const res = await uploadToR2(file, fileName);
+
       if (res.success) {
         return {
           fileName: fileName,

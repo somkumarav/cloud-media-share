@@ -1,21 +1,14 @@
-// app/components/MultiImageUploader.tsx
 "use client";
 
 import { useState } from "react";
 import { uploadImagesToR2 } from "@/actions/r2.actions";
 
-export const MultiImageUploader = () => {
+export const MultiImageUploader = (props: { directory: string }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [status, setStatus] = useState<
     { fileName: string; success: boolean; message: string }[] | null
   >(null);
   const [isUploading, setIsUploading] = useState(false);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFiles(Array.from(e.target.files));
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +22,7 @@ export const MultiImageUploader = () => {
     setIsUploading(true);
     const formData = new FormData();
     files.forEach((file) => formData.append("files", file));
+    formData.set("directory", props.directory);
 
     try {
       const results = await uploadImagesToR2(formData);
@@ -51,19 +45,20 @@ export const MultiImageUploader = () => {
     <div className='p-4'>
       <form onSubmit={handleSubmit} className='space-y-4'>
         <div>
-          <label
-            htmlFor='file-upload'
-            className='block text-sm font-medium text-gray-700'
-          >
+          <p className='block text-sm font-medium text-gray-700'>
             Choose files
-          </label>
+          </p>
           <input
             id='file-upload'
             name='files'
             type='file'
             multiple
             accept='image/*'
-            onChange={handleFileChange}
+            onChange={(e) => {
+              if (e.target.files) {
+                setFiles(Array.from(e.target.files));
+              }
+            }}
             className='mt-1 block w-full text-sm text-slate-500
               file:mr-4 file:py-2 file:px-4
               file:rounded-full file:border-0
