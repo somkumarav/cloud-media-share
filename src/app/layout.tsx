@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import { NavBar } from "../components/nav-bar";
 
-const poppins = Poppins({
+const outfit = Outfit({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
 });
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${poppins.className} antialiased mx-10 flex flex-col items-center`}
+        className={`${outfit.className} antialiased mx-10 flex flex-col items-center`}
       >
         <NavBar />
         {children}
