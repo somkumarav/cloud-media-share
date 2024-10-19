@@ -68,6 +68,7 @@ const config: Config = {
     },
     animation: {
       slide: "slide 2.5s linear infinite",
+      spin: "spin 1s linear infinite",
     },
     keyframes: {
       slide: {
@@ -76,6 +77,10 @@ const config: Config = {
         "30%": { transform: "translateY(0)", opacity: "1" },
         "45%": { transform: "translateY(-100%)", opacity: "1" },
         "100%": { transform: "translateY(-100%)", opacity: "0.1" },
+      },
+      spin: {
+        "0%": { transform: "rotate(0deg)" },
+        "100%": { transform: "rotate(360deg)" },
       },
     },
   },
