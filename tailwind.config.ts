@@ -25,7 +25,7 @@ const config: Config = {
         background: "#172217",
       },
       muted: {
-        DEFAULT: "#91170c",
+        DEFAULT: "#7A7A7A",
         foreground: "#eaa09c",
       },
       destructive: {
@@ -75,8 +75,8 @@ const config: Config = {
         "0%": { transform: "translateY(100%)", opacity: "0.1" },
         "15%": { transform: "translateY(0)", opacity: "1" },
         "30%": { transform: "translateY(0)", opacity: "1" },
-        "45%": { transform: "translateY(-100%)", opacity: "1" },
-        "100%": { transform: "translateY(-100%)", opacity: "0.1" },
+        "45%": { transform: "translateY(-100%)", opacity: "0.1" },
+        "100%": { transform: "translateY(-100%)", opacity: "0" },
       },
       spin: {
         "0%": { transform: "rotate(0deg)" },
