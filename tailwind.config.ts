@@ -27,6 +27,7 @@ const config: Config = {
       muted: {
         DEFAULT: "#7A7A7A",
         foreground: "#eaa09c",
+        background: "#222222",
       },
       destructive: {
         DEFAULT: "#91170c",
@@ -60,6 +61,7 @@ const config: Config = {
       "5": "1.5rem",
     },
     borderRadius: {
+      none: "0rem",
       sm: "0.25rem",
       md: "0.5rem",
       lg: "1rem",
