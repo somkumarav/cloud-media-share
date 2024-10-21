@@ -16,7 +16,6 @@ export const createAlbum = async () => {
   });
 
   const encryptedData = encrypt(`${data.id}`);
-  console.log("enc", encryptedData);
 
   if (data.id) {
     redirect(`/album/${encryptedData}`);
@@ -35,7 +34,6 @@ export const checkIfAlbumExists = withServerActionAsyncCatcher<
     throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
   }
   const decryptedData = decrypt(validatedData.data);
-  console.log("dec", decryptedData);
 
   const data = await prisma.album.findFirst({
     where: {
