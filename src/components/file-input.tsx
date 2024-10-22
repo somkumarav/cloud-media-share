@@ -5,13 +5,13 @@ import {
   DialogContent,
   DialogHeader,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@/src/components/ui/dialog";
+import { Button } from "@/src/components/ui/button";
 
-import { cn } from "../../lib/utils";
-import ImageUpload from "./image-upload";
+import { cn } from "@/lib/utils";
+import ImageUpload from "@/src/components/image-upload";
 import { HardDriveUpload, Upload } from "lucide-react";
-import { uploadImagesToR2 } from "../actions/r2.actions";
+import { uploadImagesToR2 } from "@/src/actions/r2.actions";
 
 export const FileInput = (props: { directory: string }) => {
   const [isUploading, setIsUploading] = useState(false);

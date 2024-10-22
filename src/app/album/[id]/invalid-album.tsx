@@ -1,7 +1,7 @@
-import { CreateNewAlbumButton } from "@/components/createNewAlbum.Button";
-import { EncryptedText } from "@/components/encrypted-text";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { CreateNewAlbumButton } from "@/src/components/createNewAlbum.Button";
+import { EncryptedText } from "@/src/components/encrypted-text";
+import { Button } from "@/src/components/ui/button";
 
 export const InvalidAlbum = () => {
   return (

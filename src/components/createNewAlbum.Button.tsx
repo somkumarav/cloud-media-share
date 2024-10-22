@@ -1,8 +1,7 @@
 "use client";
-
 import { useTransition } from "react";
-import { Button } from "./ui/button";
-import { createAlbum } from "../actions/album.actions";
+import { Button } from "@/src/components/ui/button";
+import { createAlbum } from "@/src/actions/album.actions";
 
 export function CreateNewAlbumButton() {
   const [isPending] = useTransition();

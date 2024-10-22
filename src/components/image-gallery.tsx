@@ -1,6 +1,6 @@
-import { listImagesInDirectory } from "@/actions/r2.actions";
+import { listImagesInDirectory } from "@/src/actions/r2.actions";
 import Image from "next/image";
-import { DownloadImageButton } from "./download-image-button";
+import { DownloadImageButton } from "@/src/components/download-image-button";
 
 export const ImageGallery = async ({ directory }: { directory: string }) => {
   const imageUrls = await listImagesInDirectory(directory);

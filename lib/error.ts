@@ -1,4 +1,4 @@
-import { ERROR_CODE, ERROR_NAME } from "../lib/errors.config";
+import { ERROR_CODE, ERROR_NAME } from "@/lib/errors.config";
 import { ZodError } from "zod";
 import { generateErrorMessage } from "zod-error";
 export type ErrorResponseType = {

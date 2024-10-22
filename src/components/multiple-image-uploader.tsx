@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { uploadImagesToR2 } from "@/actions/r2.actions";
+import { uploadImagesToR2 } from "@/src/actions/r2.actions";
 
 export const MultiImageUploader = (props: { directory: string }) => {
   const [files, setFiles] = useState<File[]>([]);

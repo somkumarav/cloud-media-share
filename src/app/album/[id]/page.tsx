@@ -1,9 +1,9 @@
-import { ImageGallery } from "@/components/image-gallery";
-import { checkIfAlbumExists } from "@/actions/album.actions";
 import { InvalidAlbum } from "./invalid-album";
-import { FileInput } from "../../../components/file-input";
-import { AlbumNameInput } from "../../../components/album-name-input";
-import { CopyURLButton } from "../../../components/copy-url-button";
+import { ImageGallery } from "@/src/components/image-gallery";
+import { checkIfAlbumExists } from "@/src/actions/album.actions";
+import { FileInput } from "@/src/components/file-input";
+import { AlbumNameInput } from "@/src/components/album-name-input";
+import { CopyURLButton } from "@/src/components/copy-url-button";
 
 const Page = async ({ params }: { params: { id: string } }) => {
   const directory = String(params.id);

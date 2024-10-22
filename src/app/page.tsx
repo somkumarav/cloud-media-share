@@ -1,4 +1,4 @@
-import { CreateNewAlbumButton } from "@/components/createNewAlbum.Button";
+import { CreateNewAlbumButton } from "@/src/components/createNewAlbum.Button";
 
 export default function Home() {
   return (

@@ -1,10 +1,10 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { AlbumNameSchema, TAlbumNameSchema } from "../../types/album";
-import { Button } from "./ui/button";
-import { changeAlbumName } from "../actions/album.actions";
-import { cn } from "../../lib/utils";
+import { AlbumNameSchema, TAlbumNameSchema } from "@/types/album";
+import { Button } from "@/src/components/ui/button";
+import { changeAlbumName } from "@/src/actions/album.actions";
+import { cn } from "@/lib/utils";
 import { Check, ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
