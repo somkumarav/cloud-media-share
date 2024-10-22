@@ -7,6 +7,11 @@ import { ServerActionReturnType } from "../../types/api.types";
 import { z } from "zod";
 import { SuccessResponse } from "../../lib/success";
 import { ErrorHandler } from "../../lib/error";
+import { Album } from "@prisma/client";
+import {
+  ChangeAlbumNameSchema,
+  TChangeAlbumNameSchema,
+} from "../../types/album";
 
 export const createAlbum = async () => {
   const data = await prisma.album.create({
@@ -24,10 +29,32 @@ export const createAlbum = async () => {
   }
 };
 
+export const changeAlbumName = withServerActionAsyncCatcher<
+  TChangeAlbumNameSchema,
+  ServerActionReturnType<Album>
+>(async (args) => {
+  const validatedData = await ChangeAlbumNameSchema.safeParse(args);
+  if (!validatedData.success) {
+    throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
+  }
+  const decryptedId = decrypt(validatedData.data.albumId);
+
+  const data = await prisma.album.update({
+    where: {
+      id: Number(decryptedId),
+    },
+    data: {
+      title: validatedData.data.name,
+    },
+  });
+
+  return new SuccessResponse("Album exists", 201, data).serialize();
+});
+
 const checkIfAlbumExistsSchema = z.string();
 export const checkIfAlbumExists = withServerActionAsyncCatcher<
   string,
-  ServerActionReturnType<unknown>
+  ServerActionReturnType<Album>
 >(async (args) => {
   const validatedData = await checkIfAlbumExistsSchema.safeParse(args);
   if (!validatedData.success) {
@@ -43,5 +70,5 @@ export const checkIfAlbumExists = withServerActionAsyncCatcher<
   if (!data) {
     throw new ErrorHandler("Invalid album", "BAD_REQUEST");
   }
-  return new SuccessResponse("Album exists", 201).serialize();
+  return new SuccessResponse("Album exists", 201, data).serialize();
 });
