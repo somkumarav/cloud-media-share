@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 
 import { cn } from "../../lib/utils";
 import ImageUpload from "./image-upload";
-import { HardDriveUpload } from "lucide-react";
+import { HardDriveUpload, Upload } from "lucide-react";
 import { uploadImagesToR2 } from "../actions/r2.actions";
 
 export const FileInput = (props: { directory: string }) => {
@@ -37,7 +37,12 @@ export const FileInput = (props: { directory: string }) => {
 
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
-      <DialogTrigger>open</DialogTrigger>
+      <DialogTrigger>
+        <Button>
+          <Upload strokeWidth={3} />
+          Upload photos
+        </Button>
+      </DialogTrigger>
       <DialogContent className='max-w-[900px] flex flex-col items-center'>
         <DialogHeader className='text-2xl'>Upload to cloud ☁️</DialogHeader>
         <form
