@@ -5,11 +5,13 @@ export type ImageResponseData = {
   message: string;
 };
 
+import { CircleCheckBig, Loader2 } from "lucide-react";
 import Image from "next/image";
 
 const ImageUpload = (props: {
   name: string;
   size: number;
+  isUploaded: boolean;
   imageURL: string;
   error?: boolean | undefined;
 }) => {
@@ -34,13 +36,13 @@ const ImageUpload = (props: {
       <td className={"px-6 py-4 whitespace-nowrap text-sm"}>
         {(props.size / 1000).toFixed(0)} KB
       </td>
-      {/* <td className='px-6 py-4 whitespace-nowrap text-sm'>
-         <Progress
-            className={cn("w-full h-2")}
-            value={progress}
-            isError={error || processingError}
-          />
-      </td> */}
+      <td className='px-6 py-4 whitespace-nowrap text-sm'>
+        {props.isUploaded ? (
+          <CircleCheckBig />
+        ) : (
+          <Loader2 className='animate-spin' strokeWidth={3} />
+        )}
+      </td>
     </tr>
   );
 };
