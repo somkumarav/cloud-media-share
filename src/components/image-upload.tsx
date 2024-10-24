@@ -5,7 +5,7 @@ export type ImageResponseData = {
   message: string;
 };
 
-import { CircleCheckBig, Loader2 } from "lucide-react";
+import { CircleAlert, CircleCheckBig, Loader2 } from "lucide-react";
 import Image from "next/image";
 
 const ImageUpload = (props: {
@@ -13,7 +13,7 @@ const ImageUpload = (props: {
   size: number;
   isUploaded: boolean;
   imageURL: string;
-  error?: boolean | undefined;
+  isError: boolean;
 }) => {
   return (
     <tr>
@@ -37,7 +37,12 @@ const ImageUpload = (props: {
         {(props.size / 1000).toFixed(0)} KB
       </td>
       <td className='px-6 py-4 whitespace-nowrap text-sm'>
-        {props.isUploaded ? (
+        {props.isError ? (
+          <div className='flex flex-col items-center text-destructive'>
+            <CircleAlert />
+            <p className='text-xs font-medium'>1GB Cap exceeded</p>
+          </div>
+        ) : props.isUploaded ? (
           <CircleCheckBig />
         ) : (
           <Loader2 className='animate-spin' strokeWidth={3} />

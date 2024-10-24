@@ -25,7 +25,9 @@ const computeSHA256 = async (file: File) => {
 export const FileInput = (props: { directory: string }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-  const [files, setFiles] = useState<{ isUploaded: boolean; file: File }[]>([]);
+  const [files, setFiles] = useState<
+    { isUploaded: boolean; isError: boolean; file: File }[]
+  >([]);
   const noInput = files.length <= 0;
 
   const uploadFile = async (file: File) => {
@@ -37,7 +39,26 @@ export const FileInput = (props: { directory: string }) => {
       checksum: await computeSHA256(file),
     });
 
-    if (!getSignedURLAction.status) return;
+    if (!getSignedURLAction.status) {
+      setFiles((prev) =>
+        prev.map((item) =>
+          item.file === file
+            ? {
+                file: item.file,
+                isUploaded: item.isUploaded,
+                isError: true,
+              }
+            : {
+                file: item.file,
+                isUploaded: item.isUploaded,
+                isError: item.isError,
+              }
+        )
+      );
+
+      console.error(getSignedURLAction);
+      return;
+    }
     if (!getSignedURLAction.data?.url) return;
     console.log(getSignedURLAction.data.url);
 
@@ -55,13 +76,17 @@ export const FileInput = (props: { directory: string }) => {
           ? {
               file: item.file,
               isUploaded: true,
+              isError: item.isError,
             }
           : {
               file: item.file,
               isUploaded: item.isUploaded,
+              isError: item.isError,
             }
       )
     );
+
+    console.log({ response });
 
     return response;
   };
@@ -85,7 +110,7 @@ export const FileInput = (props: { directory: string }) => {
       setFiles((prev) => [
         ...prev,
         ...uniqueFiles.map((item) => {
-          return { ...item, isuploaded: false };
+          return { ...item, isuploaded: false, isError: false };
         }),
       ]);
 
@@ -107,7 +132,7 @@ export const FileInput = (props: { directory: string }) => {
         <Upload strokeWidth={3} />
         Upload photos
       </Button>
-      <DialogContent className='max-w-[900px] flex flex-col items-center'>
+      <DialogContent className='max-w-[1000px] flex flex-col items-center'>
         <DialogHeader className='text-2xl'>Upload to cloud ☁️</DialogHeader>
         <form
           onSubmit={(e) => e.preventDefault()}
@@ -184,6 +209,7 @@ export const FileInput = (props: { directory: string }) => {
                       <ImageUpload
                         key={index}
                         isUploaded={file.isUploaded}
+                        isError={file.isError}
                         imageURL={URL.createObjectURL(file.file)}
                         name={file.file.name}
                         size={file.file.size}

@@ -20,11 +20,26 @@ export const getSignedURL = withServerActionAsyncCatcher<
   if (!validatedData.success) {
     throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
   }
-
   const { fileName, directory, fileSize, fileType, checksum } =
     validatedData.data;
 
   const decryptedAlbumId = decrypt(directory);
+
+  const albumContent = await prisma.albumContents.groupBy({
+    by: ["albumId"],
+    _sum: {
+      fileSize: true,
+    },
+  });
+
+  const totalFileSize = albumContent[0]?._sum?.fileSize ?? 0;
+
+  if (totalFileSize + fileSize > 1000000000) {
+    throw new ErrorHandler(
+      "1GB size limit exceeded",
+      "INSUFFICIENT_PERMISSIONS"
+    );
+  }
 
   const command = new PutObjectCommand({
     Bucket: "test",
