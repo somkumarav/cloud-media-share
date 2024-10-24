@@ -1,48 +1,99 @@
 "use client";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
+import { HardDriveUpload, Upload } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTrigger,
 } from "@/src/components/ui/dialog";
 import { Button } from "@/src/components/ui/button";
 
 import { cn } from "@/lib/utils";
 import ImageUpload from "@/src/components/image-upload";
-import { HardDriveUpload, Upload } from "lucide-react";
-import { uploadImagesToR2 } from "@/src/actions/r2.actions";
+import { getSignedURL } from "@/src/actions/upload.actions";
 
 export const FileInput = (props: { directory: string }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<{ isUploaded: boolean; file: File }[]>([]);
   const noInput = files.length <= 0;
 
-  const handleUpload = async () => {
-    const formData = new FormData();
-    files.forEach((file) => formData.append("files", file));
-    formData.set("directory", props.directory);
-    try {
+  const uploadFile = async (file: File) => {
+    const getSignedURLAction = await getSignedURL({
+      fileName: file.name,
+      directory: props.directory,
+    });
+
+    if (!getSignedURLAction.status) return;
+    if (!getSignedURLAction.data?.url) return;
+    console.log(getSignedURLAction.data.url);
+
+    const response = await fetch(getSignedURLAction.data?.url, {
+      method: "PUT",
+      body: file,
+      headers: {
+        "Content-Type": file.type,
+      },
+    });
+
+    setFiles((prev) =>
+      prev.map((item) =>
+        item.file === file
+          ? {
+              file: item.file,
+              isUploaded: true,
+            }
+          : {
+              file: item.file,
+              isUploaded: item.isUploaded,
+            }
+      )
+    );
+
+    return response;
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files).map((file) => ({
+        file,
+        isUploaded: false,
+      }));
+
+      const uniqueFiles = newFiles.filter(
+        (newFile) =>
+          !files.some(
+            (existingFile) =>
+              existingFile.file.name === newFile.file.name &&
+              existingFile.file.size === newFile.file.size
+          )
+      );
+
+      setFiles((prev) => [
+        ...prev,
+        ...uniqueFiles.map((item) => {
+          return { ...item, isuploaded: false };
+        }),
+      ]);
+
       setIsUploading(true);
-      const results = await uploadImagesToR2(formData);
-      console.log(results);
-    } catch (error) {
-      console.error(error);
-    } finally {
+      uniqueFiles.map((file) => {
+        uploadFile(file.file);
+      });
       setIsUploading(false);
-      setShowDialog(false);
     }
   };
 
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
-      <DialogTrigger>
-        <Button>
-          <Upload strokeWidth={3} />
-          Upload photos
-        </Button>
-      </DialogTrigger>
+      <Button
+        onClick={() => {
+          setShowDialog(true);
+        }}
+      >
+        <Upload strokeWidth={3} />
+        Upload photos
+      </Button>
       <DialogContent className='max-w-[900px] flex flex-col items-center'>
         <DialogHeader className='text-2xl'>Upload to cloud ☁️</DialogHeader>
         <form
@@ -74,14 +125,7 @@ export const FileInput = (props: { directory: string }) => {
 
                 <input
                   multiple
-                  onChange={(e) => {
-                    if (e.target.files) {
-                      setFiles((prev) => [
-                        ...prev,
-                        ...Array.from(e.target.files || []),
-                      ]);
-                    }
-                  }}
+                  onChange={handleFileChange}
                   accept='image/jpeg, image/jpg, image/png'
                   id='dropzone-file'
                   type='file'
@@ -114,16 +158,22 @@ export const FileInput = (props: { directory: string }) => {
                       >
                         Size
                       </th>
+                      <th
+                        scope='col'
+                        className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider'
+                      >
+                        Status
+                      </th>
                     </tr>
                   </thead>
                   <tbody className='relative divide-y max-h-[250px]'>
                     {files.map((file, index) => (
                       <ImageUpload
                         key={index}
-                        // error={file.error}
-                        imageURL={URL.createObjectURL(file)}
-                        name={file.name}
-                        size={file.size}
+                        isUploaded={file.isUploaded}
+                        imageURL={URL.createObjectURL(file.file)}
+                        name={file.file.name}
+                        size={file.file.size}
                       />
                     ))}
                   </tbody>
@@ -133,12 +183,18 @@ export const FileInput = (props: { directory: string }) => {
           )}
         </form>
         <div className='flex w-full justify-end'>
-          <Button size='lg' onClick={handleUpload} disabled={isUploading}>
-            {isUploading ? "Uploading..." : "Upload"}
+          <Button
+            size='lg'
+            onClick={() => {
+              setFiles([]);
+              setShowDialog(false);
+            }}
+            disabled={isUploading}
+          >
+            Close
           </Button>
         </div>
       </DialogContent>
-      {/* <FileInput directory={directory} /> */}
     </Dialog>
   );
 };
