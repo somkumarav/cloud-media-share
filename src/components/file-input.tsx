@@ -12,6 +12,16 @@ import { cn } from "@/lib/utils";
 import ImageUpload from "@/src/components/image-upload";
 import { getSignedURL } from "@/src/actions/upload.actions";
 
+const computeSHA256 = async (file: File) => {
+  const buffer = await file.arrayBuffer();
+  const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return hashHex;
+};
+
 export const FileInput = (props: { directory: string }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
@@ -22,6 +32,9 @@ export const FileInput = (props: { directory: string }) => {
     const getSignedURLAction = await getSignedURL({
       fileName: file.name,
       directory: props.directory,
+      fileSize: file.size,
+      fileType: file.type,
+      checksum: await computeSHA256(file),
     });
 
     if (!getSignedURLAction.status) return;
