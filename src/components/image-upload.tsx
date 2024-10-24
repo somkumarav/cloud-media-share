@@ -34,7 +34,7 @@ const ImageUpload = (props: {
         </div>
       </td>
       <td className={"px-6 py-4 whitespace-nowrap text-sm"}>
-        {(props.size / 1000).toFixed(0)} KB
+        {(props.size / 1000000).toFixed(2)} MB
       </td>
       <td className='px-6 py-4 whitespace-nowrap text-sm'>
         {props.isError ? (
