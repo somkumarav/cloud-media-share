@@ -2,20 +2,30 @@ import { CreateNewAlbumButton } from "@/src/components/createNewAlbum.Button";
 
 export default function Home() {
   return (
-    <main className='flex flex-col items-center pt-40 space-y-4'>
-      <div className='text-center space-y-5'>
-        <p className='text-7xl'>
-          Got some photos to share <br /> with friends and family
-        </p>
-        <p className='text-lg text-muted'>
-          Tap on
-          <span className='text-accent-foreground rounded-sm px-1 mx-[2px]'>
-            Create new album
+    <main className='flex flex-col items-center pt-40'>
+      <p className='text-6xl text-center mb-2'>
+        Got some photos to share <br /> with friends and family
+      </p>
+      <div className='mb-4'>
+        <h1 className='flex items-center text-lg text-muted font-medium text-neutral-400'>
+          Tap on create new album to create an album of you recent
+          <span className='relative ml-1 h-[1.25rem] w-36 overflow-hidden'>
+            <span className='absolute h-full w-full -translate-y-full animate-slide text-accent-foreground leading-none'>
+              Trip
+            </span>
+            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:1s]'>
+              Wedding
+            </span>
+            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:2s]'>
+              Party
+            </span>
+            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:3s]'>
+              Get Together
+            </span>
           </span>
-          to create a sharable <br /> photo album of you recent trip, wedding,
-          party, you name it...
-        </p>
+        </h1>
       </div>
+
       <div className='flex items-center space-x-2'>
         {/* <Button variant='secondary' size='lg'>
           Login to explore full features

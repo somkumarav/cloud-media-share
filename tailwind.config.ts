@@ -13,7 +13,7 @@ const config: Config = {
       white: "#ffffff",
       black: "#000000",
       background: {
-        DEFAULT: "#08090a",
+        DEFAULT: "#0e1011",
         secondary: "#28282c",
       },
       foreground: {
@@ -69,16 +69,16 @@ const config: Config = {
       full: "1000rem",
     },
     animation: {
-      slide: "slide 2.5s linear infinite",
+      slide: "slide 4s linear infinite",
       spin: "spin 1s linear infinite",
     },
     keyframes: {
       slide: {
-        "0%": { transform: "translateY(100%)", opacity: "0.1" },
+        "0%": { transform: "translateY(115%)", opacity: "0" },
         "15%": { transform: "translateY(0)", opacity: "1" },
         "30%": { transform: "translateY(0)", opacity: "1" },
-        "45%": { transform: "translateY(-100%)", opacity: "0.1" },
-        "100%": { transform: "translateY(-100%)", opacity: "0" },
+        "38%": { transform: "translateY(-115%)", opacity: "1" },
+        "100%": { transform: "translateY(-115%)", opacity: "0" },
       },
       spin: {
         "0%": { transform: "rotate(0deg)" },
