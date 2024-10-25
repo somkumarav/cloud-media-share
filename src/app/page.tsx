@@ -1,8 +1,9 @@
+import Image from "next/image";
 import { CreateNewAlbumButton } from "@/src/components/createNewAlbum.Button";
 
 export default function Home() {
   return (
-    <main className='flex flex-col items-center pt-40'>
+    <main className='flex flex-col items-center pt-40 mb-3'>
       <p className='text-6xl text-center mb-2'>
         Got some photos to share <br /> with friends and family
       </p>
@@ -31,6 +32,16 @@ export default function Home() {
           Login to explore full features
         </Button> */}
         <CreateNewAlbumButton />
+      </div>
+      <div>
+        <Image
+          src='/album.png'
+          height={500}
+          width={1000}
+          alt=''
+          className='border border-accent-background rounded-xl mt-10'
+          unoptimized
+        />
       </div>
     </main>
   );
