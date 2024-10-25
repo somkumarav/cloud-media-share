@@ -69,7 +69,7 @@ const config: Config = {
       full: "1000rem",
     },
     animation: {
-      slide: "slide 4s linear infinite",
+      slide: "slide 6s linear infinite",
       spin: "spin 1s linear infinite",
     },
     keyframes: {

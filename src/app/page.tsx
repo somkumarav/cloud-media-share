@@ -14,13 +14,13 @@ export default function Home() {
             <span className='absolute h-full w-full -translate-y-full animate-slide text-accent-foreground leading-none'>
               Trip
             </span>
-            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:1s]'>
+            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:1.5s]'>
               Wedding
             </span>
-            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:2s]'>
+            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:3s]'>
               Party
             </span>
-            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:3s]'>
+            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:4.5s]'>
               Get Together
             </span>
           </span>
