@@ -5,6 +5,11 @@ import { HeroText } from "@/src/components/home/hero-text";
 export default function Home() {
   return (
     <main className='flex flex-col items-center'>
+      <div className='mt-32 mb-3'>
+        <div className='py-[2px] px-5 rounded-full bg-accent-background text-accent-foreground'>
+          Created with love by somu. 😶‍🌫️
+        </div>
+      </div>
       <HeroText />
       <div className='flex items-center space-x-2'>
         {/* <Button variant='secondary' size='lg'>
