@@ -1,32 +1,11 @@
 import Image from "next/image";
 import { CreateNewAlbumButton } from "@/src/components/createNewAlbum.Button";
+import { HeroText } from "@/src/components/home/hero-text";
 
 export default function Home() {
   return (
-    <main className='flex flex-col items-center pt-32 mb-3'>
-      <p className='text-6xl text-center mb-2'>
-        Got some photos to share <br /> with friends and family
-      </p>
-      <div className='mb-4'>
-        <h1 className='flex items-center text-lg text-muted font-medium text-neutral-400'>
-          Tap on create new album to create an album of you recent
-          <span className='relative ml-1 h-[1.5rem] w-36 overflow-hidden translate-y-[0.2rem]'>
-            <span className='absolute h-full w-full -translate-y-full animate-slide text-accent-foreground leading-none'>
-              Trip
-            </span>
-            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:1.5s]'>
-              Wedding
-            </span>
-            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:3s]'>
-              Party
-            </span>
-            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:4.5s]'>
-              Get Together
-            </span>
-          </span>
-        </h1>
-      </div>
-
+    <main className='flex flex-col items-center'>
+      <HeroText />
       <div className='flex items-center space-x-2'>
         {/* <Button variant='secondary' size='lg'>
           Login to explore full features
