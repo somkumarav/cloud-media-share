@@ -11,6 +11,7 @@ import { Button } from "@/src/components/ui/button";
 import { cn } from "@/lib/utils";
 import ImageUpload from "@/src/components/image-upload";
 import { getSignedURL } from "@/src/actions/upload.actions";
+import { useRouter } from "next/navigation";
 
 const computeSHA256 = async (file: File) => {
   const buffer = await file.arrayBuffer();
@@ -23,6 +24,7 @@ const computeSHA256 = async (file: File) => {
 };
 
 export const FileInput = (props: { directory: string }) => {
+  const router = useRouter();
   const [isUploading, setIsUploading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [files, setFiles] = useState<
@@ -91,6 +93,19 @@ export const FileInput = (props: { directory: string }) => {
     return response;
   };
 
+  const uploadSequentially = async (
+    uniqueFiles: {
+      file: File;
+      isUploaded: boolean;
+    }[]
+  ) => {
+    for (const file of uniqueFiles) {
+      await uploadFile(file.file);
+    }
+    router.refresh();
+    setIsUploading(false);
+  };
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files).map((file) => ({
@@ -115,10 +130,7 @@ export const FileInput = (props: { directory: string }) => {
       ]);
 
       setIsUploading(true);
-      uniqueFiles.map((file) => {
-        uploadFile(file.file);
-      });
-      setIsUploading(false);
+      uploadSequentially(uniqueFiles);
     }
   };
 
@@ -225,8 +237,8 @@ export const FileInput = (props: { directory: string }) => {
           <Button
             size='lg'
             onClick={() => {
-              setFiles([]);
               setShowDialog(false);
+              setFiles([]);
             }}
             disabled={isUploading}
           >
