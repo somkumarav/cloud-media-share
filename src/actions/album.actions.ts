@@ -9,6 +9,7 @@ import { SuccessResponse } from "@/lib/success";
 import { ErrorHandler } from "@/lib/error";
 import { Album } from "@prisma/client";
 import { ChangeAlbumNameSchema, TChangeAlbumNameSchema } from "@/types/album";
+import { revalidatePath } from "next/cache";
 
 export const createAlbum = async () => {
   const data = await prisma.album.create({
@@ -45,6 +46,7 @@ export const changeAlbumName = withServerActionAsyncCatcher<
     },
   });
 
+  revalidatePath("/album/[id]", "page");
   return new SuccessResponse("Album exists", 201, data).serialize();
 });
 
