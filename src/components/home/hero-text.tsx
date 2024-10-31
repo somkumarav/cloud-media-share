@@ -1,6 +1,6 @@
 export const HeroText = () => {
   return (
-    <div className=''>
+    <div className='opacity-0 animate-top-fade-in [animation-delay:400ms;]'>
       <p className='text-6xl text-center mb-2'>
         Got some photos to share <br /> with friends and family
       </p>

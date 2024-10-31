@@ -72,6 +72,8 @@ const config: Config = {
     animation: {
       slide: "slide 6s linear infinite",
       spin: "spin 1s linear infinite",
+      "fade-in": "fade-in 4000ms ease forwards",
+      "top-fade-in": "top-fade-in 1000ms ease forwards",
     },
     keyframes: {
       slide: {
@@ -80,6 +82,14 @@ const config: Config = {
         "30%": { transform: "translateY(0)", opacity: "1" },
         "38%": { transform: "translateY(-115%)", opacity: "1" },
         "100%": { transform: "translateY(-115%)", opacity: "0" },
+      },
+      "top-fade-in": {
+        from: { opacity: "0", transform: "translateY(-10px)" },
+        to: { opacity: "1", transform: "none" },
+      },
+      "fade-in": {
+        from: { opacity: "0" },
+        to: { opacity: "1" },
       },
       spin: {
         "0%": { transform: "rotate(0deg)" },

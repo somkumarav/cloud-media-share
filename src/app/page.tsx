@@ -5,7 +5,7 @@ import { HeroText } from "@/src/components/home/hero-text";
 export default function Home() {
   return (
     <main className='flex flex-col items-center'>
-      <div className='mt-32 mb-3'>
+      <div className='mt-32 mb-3 opacity-0 animate-top-fade-in [animation-delay:200ms;]'>
         <div className='py-[2px] px-5 rounded-full bg-accent-background text-accent-foreground'>
           Created with love by somu. 😶‍🌫️
         </div>
@@ -17,7 +17,7 @@ export default function Home() {
         </Button> */}
         <CreateNewAlbumButton />
       </div>
-      <div>
+      <div className='opacity-0 animate-fade-in [animation-delay:1500ms;]'>
         <Image
           src='/album.png'
           height={500}
