@@ -22,10 +22,10 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${outfit.className} antialiased mx-10 min-h-screen flex flex-col `}
+        className={`${outfit.className} antialiased min-h-screen flex flex-col `}
       >
         <NavBar />
-        <main className='flex-1'>{children}</main>
+        <main className='flex-1 mx-10'>{children}</main>
       </body>
     </html>
   );
