@@ -17,7 +17,7 @@ export default function Home() {
         </Button> */}
         <CreateNewAlbumButton />
       </div>
-      <div className='opacity-0 animate-fade-in [animation-delay:1500ms;]'>
+      <div className='opacity-0 animate-fade-in [animation-delay:1200ms;]'>
         <Image
           src='/album.png'
           height={500}
