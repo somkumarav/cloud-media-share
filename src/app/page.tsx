@@ -11,7 +11,7 @@ export default function Home() {
         </div>
       </div>
       <HeroText />
-      <div className='flex items-center space-x-2'>
+      <div className='flex items-center space-x-2 opacity-0 animate-top-fade-in [animation-delay:600ms;]'>
         {/* <Button variant='secondary' size='lg'>
           Login to explore full features
         </Button> */}
