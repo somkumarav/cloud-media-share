@@ -23,10 +23,13 @@ export const getSignedURL = withServerActionAsyncCatcher<
   const { fileName, directory, fileSize, fileType, checksum } =
     validatedData.data;
 
-  const decryptedAlbumId = decrypt(directory);
+  const decryptedAlbumId = Number(decrypt(directory));
 
   const albumContent = await prisma.albumContents.groupBy({
     by: ["albumId"],
+    where: {
+      albumId: decryptedAlbumId,
+    },
     _sum: {
       fileSize: true,
     },
@@ -59,7 +62,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
       fileSize,
       fileName,
       url: signedURL.split("?")[0],
-      albumId: Number(decryptedAlbumId),
+      albumId: decryptedAlbumId,
     },
   });
 
