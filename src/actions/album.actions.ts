@@ -12,6 +12,20 @@ import { ChangeAlbumNameSchema, TChangeAlbumNameSchema } from "@/types/album";
 import { revalidatePath } from "next/cache";
 
 export const createAlbum = async () => {
+  const albumContentSum = await prisma.albumContents.groupBy({
+    by: ["albumId"],
+    _sum: {
+      fileSize: true,
+    },
+  });
+  const totalSize = albumContentSum.reduce((total, item) => {
+    return item._sum.fileSize ? total + item._sum.fileSize : total;
+  }, 0);
+
+  if (totalSize > 12000000000) {
+    redirect("/service-unavailable");
+  }
+
   const data = await prisma.album.create({
     data: {
       title: "",
