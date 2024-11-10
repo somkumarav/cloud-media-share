@@ -31,8 +31,8 @@ const config: Config = {
         background: "#222222",
       },
       destructive: {
-        DEFAULT: "#91170c",
-        foreground: "#eaa09c",
+        DEFAULT: "#c52828",
+        background: "#c5282840",
       },
       card: {
         DEFAULT: "hsl(var(--card))",
