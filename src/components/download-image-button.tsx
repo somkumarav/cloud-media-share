@@ -1,5 +1,6 @@
 "use client";
 import { DownloadCloudIcon } from "lucide-react";
+import { Button } from "@/src/components/ui/button";
 
 type ImageObject = {
   key: string;
@@ -20,12 +21,12 @@ export const DownloadImageButton = (props: { image: ImageObject }) => {
   };
 
   return (
-    <button
+    <Button
       onClick={(e) => handleDownload(e, props.image)}
-      className='p-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200'
+      className='p-4 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#2a452a]'
       aria-label='Download image'
     >
-      <DownloadCloudIcon className='w-6 h-6 text-black' />
-    </button>
+      <DownloadCloudIcon className='w-6 h-6' />
+    </Button>
   );
 };
