@@ -31,7 +31,7 @@ export async function getObjectFromR2(key: string) {
 export async function listImagesInDirectory(directory: string) {
   const command = new ListObjectsV2Command({
     Bucket: "test",
-    Prefix: `${directory}/`,
+    Prefix: `${directory}/thumbnail-`,
   });
 
   try {
@@ -44,14 +44,25 @@ export async function listImagesInDirectory(directory: string) {
 
     const imageUrls = await Promise.all(
       imageObjects.map(async (obj) => {
+        const imageName = obj.Key?.replace("thumbnail-", "");
+        const thumbnailImageName = obj.Key;
+
         const getObjectCommand = new GetObjectCommand({
           Bucket: "test",
-          Key: obj.Key,
+          Key: imageName,
         });
+        const getThumbnailObjectCommand = new GetObjectCommand({
+          Bucket: "test",
+          Key: thumbnailImageName,
+        });
+
         const url = await getSignedUrl(s3, getObjectCommand, {
-          expiresIn: 3600,
+          expiresIn: 36000,
         });
-        return { key: obj.Key!, url };
+        const thumbnailUrl = await getSignedUrl(s3, getThumbnailObjectCommand, {
+          expiresIn: 36000,
+        });
+        return { key: obj.Key!, url, thumbnailUrl };
       })
     );
 
