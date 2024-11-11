@@ -13,7 +13,7 @@ import { decrypt } from "@/lib/encryption";
 
 export const getSignedURL = withServerActionAsyncCatcher<
   TGetSignedURL,
-  ServerActionReturnType<{ url: string }>
+  ServerActionReturnType<{ url: string; thumbnailUrl: string }>
 >(async (args) => {
   const validatedData = GetSignedURLSchema.safeParse(args);
 
@@ -52,7 +52,15 @@ export const getSignedURL = withServerActionAsyncCatcher<
     ChecksumSHA256: checksum,
   });
 
+  const thumbnailCommand = new PutObjectCommand({
+    Bucket: "test",
+    Key: `${directory}/thumbnail-${fileName}`,
+  });
+
   const signedURL = await getSignedUrl(s3, command, {
+    expiresIn: 60,
+  });
+  const thumbnailSignedURL = await getSignedUrl(s3, thumbnailCommand, {
     expiresIn: 60,
   });
 
@@ -68,5 +76,6 @@ export const getSignedURL = withServerActionAsyncCatcher<
 
   return new SuccessResponse("Album exists", 201, {
     url: signedURL,
+    thumbnailUrl: thumbnailSignedURL,
   }).serialize();
 });
