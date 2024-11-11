@@ -16,7 +16,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
 
   return (
     <div>
-      <div className='flex w-full flex-col'>
+      <div className='flex w-full flex-col mb-5'>
         <div className='mb-10'>
           <AlbumNameInput
             albumId={params.id}
