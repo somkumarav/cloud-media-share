@@ -11,7 +11,7 @@ export const ImageGallery = async ({ directory }: { directory: string }) => {
   // if (error) return <div className='text-center text-red-500'>{error}</div>;
 
   return (
-    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+    <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
       {imageUrls.map((image) => (
         <div key={image.key} className='relative aspect-square group'>
           <Image
