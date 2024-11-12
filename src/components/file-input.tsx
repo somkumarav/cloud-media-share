@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HardDriveUpload, Upload } from "lucide-react";
 import {
   Dialog,
@@ -13,6 +13,7 @@ import ImageUpload from "@/src/components/image-upload";
 import { getSignedURL } from "@/src/actions/upload.actions";
 import { useRouter } from "next/navigation";
 import { createThumbnail } from "@/lib/create-thumbnail";
+import { acceptedFileType } from "@/lib/accepted-types";
 
 const computeSHA256 = async (file: File) => {
   const buffer = await file.arrayBuffer();
@@ -26,12 +27,21 @@ const computeSHA256 = async (file: File) => {
 
 export const FileInput = (props: { directory: string }) => {
   const router = useRouter();
-  const [isUploading, setIsUploading] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
   const [files, setFiles] = useState<
     { isUploaded: boolean; isError: boolean; file: File }[]
   >([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [warning, setWarning] = useState<string | null>(null);
   const noInput = files.length <= 0;
+
+  useEffect(() => {
+    if (warning) {
+      setTimeout(() => {
+        setWarning(null);
+      }, 2000);
+    }
+  }, [warning]);
 
   const uploadFile = async (file: File) => {
     const getSignedURLAction = await getSignedURL({
@@ -149,10 +159,15 @@ export const FileInput = (props: { directory: string }) => {
 
   const handleFileChange = (fileList: FileList) => {
     if (fileList) {
-      const newFiles = Array.from(fileList).map((file) => ({
-        file,
-        isUploaded: false,
-      }));
+      const newFiles = Array.from(fileList)
+        .filter((file) => {
+          setWarning("Invalid file type");
+          acceptedFileType.includes(file.type);
+        })
+        .map((file) => ({
+          file,
+          isUploaded: false,
+        }));
 
       const uniqueFiles = newFiles.filter(
         (newFile) =>
@@ -204,18 +219,35 @@ export const FileInput = (props: { directory: string }) => {
             <label
               htmlFor='dropzone-file'
               className={cn(
-                "bg-accent-background relative min-h-[250px] w-full flex items-center justify-center rounded-lg hover:bg-accent-foreground/20 transition cursor-pointer",
+                "relative min-h-[250px] w-full flex items-center justify-center rounded-lg  transition-all cursor-pointer",
+                warning
+                  ? "bg-destructive/20"
+                  : "bg-accent-background hover:bg-accent-foreground/20",
                 { "border-b rounded-b-none": !noInput }
               )}
             >
               <div className='flex flex-col items-center'>
                 <HardDriveUpload
                   size={50}
-                  className='mb-4 text-accent-foreground'
+                  className={cn(
+                    "mb-4",
+                    warning ? "text-destructive" : "text-accent-foreground"
+                  )}
                 />
-                <p className='mb-2 text-sm text-gray-500 text-accent-foreground'>
-                  <span className='font-semibold'>Click to upload</span> or drag
-                  and drop
+                <p
+                  className={cn(
+                    "mb-2 text-sm text-gray-500",
+                    warning ? "text-destructive" : "text-accent-foreground"
+                  )}
+                >
+                  {warning ? (
+                    <p className='text-xl'>{warning}</p>
+                  ) : (
+                    <>
+                      <span className='font-semibold'>Click to upload</span> or
+                      drag and drop
+                    </>
+                  )}
                 </p>
 
                 <input
