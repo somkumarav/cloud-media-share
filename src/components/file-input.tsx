@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { HardDriveUpload, Upload } from "lucide-react";
 import {
   Dialog,
@@ -160,9 +160,9 @@ export const FileInput = (props: { directory: string }) => {
     setIsUploading(false);
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const newFiles = Array.from(e.target.files).map((file) => ({
+  const handleFileChange = (fileList: FileList) => {
+    if (fileList) {
+      const newFiles = Array.from(fileList).map((file) => ({
         file,
         isUploaded: false,
       }));
@@ -207,8 +207,11 @@ export const FileInput = (props: { directory: string }) => {
           <div
             className='flex w-full '
             onDrop={(e) => {
-              console.log("drop", e.dataTransfer.files);
+              e.preventDefault();
+              const fileList = e.dataTransfer.files;
+              if (fileList) handleFileChange(fileList);
             }}
+            onDragOver={(e) => e.preventDefault()}
           >
             <label
               htmlFor='dropzone-file'
@@ -229,7 +232,10 @@ export const FileInput = (props: { directory: string }) => {
 
                 <input
                   multiple
-                  onChange={handleFileChange}
+                  onChange={(e) => {
+                    const fileList = e.target.files;
+                    if (fileList) handleFileChange(fileList);
+                  }}
                   accept='image/jpeg, image/jpg, image/png'
                   id='dropzone-file'
                   type='file'
