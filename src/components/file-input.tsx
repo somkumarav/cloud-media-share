@@ -108,7 +108,7 @@ export const FileInput = (props: { directory: string }) => {
     }
     if (!getSignedURLAction.data?.url) return;
 
-    const thumbnail = await createThumbnail(file, 600, 600);
+    const thumbnail = await createThumbnail(file, 550, 550);
 
     const response = await fetch(getSignedURLAction.data?.url, {
       method: "PUT",
