@@ -101,15 +101,48 @@ export const FileInput = (props: { directory: string }) => {
     return response;
   };
 
-  const uploadSequentially = async (
+  // const uploadSequentially = async (
+  //   uniqueFiles: {
+  //     file: File;
+  //     isUploaded: boolean;
+  //   }[]
+  // ) => {
+  //   for (const file of uniqueFiles) {
+  //     await uploadFile(file.file);
+  //   }
+  //   router.refresh();
+  //   setIsUploading(false);
+  // };
+
+  const uploadParallelly = async (
     uniqueFiles: {
       file: File;
       isUploaded: boolean;
-    }[]
+    }[],
+    concurrencyLimit = 3
   ) => {
-    for (const file of uniqueFiles) {
-      await uploadFile(file.file);
+    setIsUploading(true);
+
+    const uploadQueue = uniqueFiles.filter((file) => !file.isUploaded);
+    const results = [];
+
+    while (uploadQueue.length > 0) {
+      const batch = uploadQueue.splice(0, concurrencyLimit);
+      const batchPromises = batch.map((file) =>
+        uploadFile(file.file)
+          .then(() => ({ success: true, file: file.file }))
+          .catch((error) => ({ success: false, file: file.file, error }))
+      );
+
+      const batchResults = await Promise.all(batchPromises);
+      results.push(...batchResults);
     }
+
+    const failedUploads = results.filter((result) => !result.success);
+    if (failedUploads.length > 0) {
+      console.error("Some files failed to upload:", failedUploads);
+    }
+
     router.refresh();
     setIsUploading(false);
   };
@@ -138,7 +171,8 @@ export const FileInput = (props: { directory: string }) => {
       ]);
 
       setIsUploading(true);
-      uploadSequentially(uniqueFiles);
+      // uploadSequentially(uniqueFiles);
+      uploadParallelly(uniqueFiles);
     }
   };
 
