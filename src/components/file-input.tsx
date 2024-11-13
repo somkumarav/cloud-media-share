@@ -161,8 +161,9 @@ export const FileInput = (props: { directory: string }) => {
     if (fileList) {
       const newFiles = Array.from(fileList)
         .filter((file) => {
-          setWarning("Invalid file type");
-          acceptedFileType.includes(file.type);
+          if (!acceptedFileType.includes(file.type))
+            return setWarning("Invalid file type");
+          return file;
         })
         .map((file) => ({
           file,
