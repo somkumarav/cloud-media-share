@@ -1,13 +1,13 @@
 import { listImagesInDirectory } from "@/src/actions/r2.actions";
 import Image from "next/image";
 import { DownloadImageButton } from "@/src/components/download-image-button";
+import { EmptyGallery } from "./empty-gallery";
 
 export const ImageGallery = async ({ directory }: { directory: string }) => {
   const imageUrls = await listImagesInDirectory(directory);
 
   // if (isLoading) return <div className='text-center'>Loading...</div>;
-  // if (!images.length)
-  //   return <div className='text-center'>Add images to cloud</div>;
+  if (!imageUrls.length) return <EmptyGallery directory={directory} />;
   // if (error) return <div className='text-center text-red-500'>{error}</div>;
 
   return (
