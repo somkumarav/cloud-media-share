@@ -1,6 +1,6 @@
 export const acceptedFileType = [
   "image/jpeg",
-  "images/png",
+  "image/png",
   "image/webp",
   "image/mp4",
   "image/webm",
