@@ -1,15 +1,12 @@
 import Image from "next/image";
 import { CreateNewAlbumButton } from "@/src/components/createNewAlbum.Button";
 import { HeroText } from "@/src/components/home/hero-text";
+import { PillCTA } from "../components/pillCTA";
 
 export default function Home() {
   return (
     <main className='flex flex-col items-center'>
-      <div className='mt-32 mb-3 opacity-0 animate-top-fade-in [animation-delay:200ms;]'>
-        <div className='py-[2px] px-5 rounded-full bg-accent-background text-accent-foreground'>
-          Created with love by somu. 😶‍🌫️
-        </div>
-      </div>
+      <PillCTA />
       <HeroText />
       <div className='flex items-center space-x-2 opacity-0 animate-top-fade-in [animation-delay:600ms;]'>
         {/* <Button variant='secondary' size='lg'>
