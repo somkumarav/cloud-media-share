@@ -1,13 +1,17 @@
 export const HeroText = () => {
   return (
     <div className='opacity-0 animate-top-fade-in [animation-delay:400ms;]'>
-      <p className='text-6xl text-center mb-2'>
+      <p className='text-2xl md:text-6xl text-center mb-2'>
         Got some photos to share <br /> with friends and family
       </p>
-      <div className='mb-4'>
-        <h1 className='flex items-center text-lg text-muted font-medium text-neutral-400'>
-          Tap on create new album to create an album of you recent
-          <span className='relative ml-1 h-[1.5rem] w-36 overflow-hidden translate-y-[0.2rem]'>
+      <div className='mb-4 flex flex-col items-center text-muted font-medium text-sm md:text-lg'>
+        <p className='md:hidden'>Tap on create new album to create an</p>
+        <h1 className='flex items-center'>
+          <p className='hidden md:block'>
+            Tap on create new album to create an
+          </p>
+          album of your recent
+          <span className='relative ml-1 h-[1.1rem] md:h-[1.5rem] w-28 md:w-36 overflow-hidden translate-y-[0.2rem]'>
             <span className='absolute h-full w-full -translate-y-full animate-slide text-accent-foreground leading-none'>
               Trip 🏕️
             </span>
