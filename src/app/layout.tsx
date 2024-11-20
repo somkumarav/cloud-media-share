@@ -23,7 +23,7 @@ export default function RootLayout({
       <body
         className={`${outfit.className} antialiased min-h-screen flex flex-col `}
       >
-        <main className='flex-1 mx-10'>{children}</main>
+        <main className='flex-1 mx-5 md:mx-10'>{children}</main>
       </body>
     </html>
   );
