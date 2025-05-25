@@ -5,16 +5,16 @@ import { Button } from "@/src/components/ui/button";
 
 export const InvalidAlbum = () => {
   return (
-    <div className='pt-32 flex flex-col items-center justify-center'>
+    <div className='pt-44 flex flex-col items-center justify-center'>
       <EncryptedText
-        text='broken url encryption'
+        text='Oops! broken url'
         className='text-5xl text-center font-semibold'
-        leadingText={
-          <p className='text-5xl text-center font-semibold'>
-            Oops!
-            <br />
-          </p>
-        }
+        // leadingText={
+        //   <p className='text-5xl text-center font-semibold'>
+        //     Oops!
+        //     <br />
+        //   </p>
+        // }
         trailingText={
           <>
             <p className='mt-2 mb-8 text-muted'>
