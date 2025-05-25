@@ -72,7 +72,7 @@ const config: Config = {
     animation: {
       slide: "slide 6s linear infinite",
       spin: "spin 1s linear infinite",
-      "fade-in": "fade-in 4000ms ease forwards",
+      "fade-in": "fade-in 3000ms ease forwards",
       "top-fade-in": "top-fade-in 1000ms ease forwards",
     },
     keyframes: {
