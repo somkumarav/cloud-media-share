@@ -20,7 +20,7 @@ export default function Home() {
           height={500}
           width={1000}
           alt=''
-          className='border border-accent-background rounded-xl mt-10'
+          className='border border-accent-background rounded-xl rounded-b-none mt-10'
           unoptimized
         />
       </div>
