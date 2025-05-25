@@ -7,7 +7,7 @@ export const HeroText = () => {
       <div className='mb-4 flex flex-col items-center text-muted font-medium text-sm md:text-lg'>
         <p className='md:hidden'>Tap on create new album to create an</p>
         <h1 className='flex items-center'>
-          <p className='hidden md:block'>
+          <p className='hidden md:block pr-1'>
             Tap on create new album to create an
           </p>
           album of your recent
