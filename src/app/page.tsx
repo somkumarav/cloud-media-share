@@ -19,7 +19,7 @@ export default function Home() {
           src='/album.png'
           height={500}
           width={1000}
-          alt=''
+          alt='Hero image'
           className='border border-accent-background rounded-xl rounded-b-none mt-10'
           unoptimized
         />
