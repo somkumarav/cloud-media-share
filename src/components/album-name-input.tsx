@@ -5,7 +5,7 @@ import { AlbumNameSchema, TAlbumNameSchema } from "@/types/album";
 import { Button } from "@/src/components/ui/button";
 import { changeAlbumName } from "@/src/actions/album.actions";
 import { cn } from "@/lib/utils";
-import { Check, ChevronLeft } from "lucide-react";
+import { Check, ChevronLeft, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export const AlbumNameInput = (props: {
@@ -30,10 +30,16 @@ export const AlbumNameInput = (props: {
         });
       })}
     >
-      {form.watch("name") !== props.albumName ? (
-        <Button type='submit' size='icon'>
-          <Check strokeWidth={3} />
-        </Button>
+      {form.formState.isDirty ? (
+        form.formState.isSubmitting ? (
+          <Button disabled size='icon'>
+            <Loader2 className='animate-spin' />
+          </Button>
+        ) : (
+          <Button type='submit' size='icon'>
+            <Check strokeWidth={3} />
+          </Button>
+        )
       ) : (
         <ChevronLeft
           className='cursor-pointer h-10 w-10'
