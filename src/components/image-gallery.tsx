@@ -16,7 +16,7 @@ export const ImageGallery = async ({ directory }: { directory: string }) => {
         image.key.split("/")[1].startsWith("thumbnail") ? (
           <div key={image.key} className='relative aspect-square group'>
             <Image
-              loading='eager'
+              loading='lazy'
               src={image.thumbnailUrl}
               alt={image.key}
               className='object-cover w-full h-full rounded-lg'
