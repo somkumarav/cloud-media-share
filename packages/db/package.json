@@ -1,0 +1,29 @@
+{
+  "name": "@repo/db",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dg:generate": "pnpm prisma generate",
+    "db:push": "pnpm prisma db push"
+  },
+  "keywords": [],
+  "author": "",
+  "exports": {
+    "./client":"./index.ts"
+  },
+  "dependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "node": "^18.20.0",
+    "typescript": "5.8.2",
+    "prisma": "^6.13.0"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@prisma/client": "6.13.0"
+  }
+}
