@@ -1,11 +1,12 @@
 import type { Config } from "tailwindcss";
+import * as tailwindAnimate from "tailwindcss-animate";
 
 const config: Config = {
   darkMode: ["class"],
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     colors: {
@@ -96,5 +97,6 @@ const config: Config = {
       },
     },
   },
+  plugins: [tailwindAnimate],
 };
 export default config;
