@@ -7,7 +7,6 @@ import { CopyURLButton } from "@/components/copy-url-button";
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  console.log(id);
   const directory = String(id);
   const isValidAlbum = await checkIfAlbumExists(id);
 

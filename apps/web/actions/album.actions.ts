@@ -69,7 +69,6 @@ export const checkIfAlbumExists = withServerActionAsyncCatcher<
   string,
   ServerActionReturnType<Album>
 >(async (args) => {
-  console.log("Checking if album exists with args:", args);
   const validatedData = await checkIfAlbumExistsSchema.safeParse(args);
   if (!validatedData.success) {
     throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
@@ -81,7 +80,6 @@ export const checkIfAlbumExists = withServerActionAsyncCatcher<
       id: Number(decryptedData),
     },
   });
-  console.log({ data });
   if (!data) {
     throw new ErrorHandler("Invalid album", "BAD_REQUEST");
   }
