@@ -65,12 +65,6 @@ importers:
       tailwind-merge:
         specifier: ^2.5.4
         version: 2.6.0
-      tailwindcss:
-        specifier: ^3.4.1
-        version: 3.4.17
-      tailwindcss-animate:
-        specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@3.4.17)
       zod:
         specifier: ^3.23.8
         version: 3.25.76
@@ -96,6 +90,12 @@ importers:
       eslint:
         specifier: ^9.31.0
         version: 9.31.0(jiti@2.5.1)
+      tailwindcss:
+        specifier: ^3.4.1
+        version: 3.4.17
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@3.4.17)
       typescript:
         specifier: 5.8.2
         version: 5.8.2

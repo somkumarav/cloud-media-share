@@ -26,8 +26,7 @@
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.53.1",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss": "^3.4.1",
-    "tailwindcss-animate": "^1.0.7",
+
     "zod": "^3.23.8",
     "zod-error": "^1.5.0"
   },
@@ -38,6 +37,8 @@
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
     "eslint": "^9.31.0",
-    "typescript": "5.8.2"
+    "typescript": "5.8.2",
+    "tailwindcss": "^3.4.1",
+    "tailwindcss-animate": "^1.0.7"
   }
 }
