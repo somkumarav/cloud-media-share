@@ -30,7 +30,7 @@ export const AlbumNameInput = (props: {
         });
       })}
     >
-      {form.formState.isDirty ? (
+      {form.watch("name") !== props.albumName ? (
         form.formState.isSubmitting ? (
           <Button disabled size='icon'>
             <Loader2 className='animate-spin' />
