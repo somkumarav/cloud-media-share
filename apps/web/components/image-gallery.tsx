@@ -13,7 +13,7 @@ export const ImageGallery = async ({ directory }: { directory: string }) => {
   return (
     <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
       {imageUrls.map((image) =>
-        image.key.split("/")[1].startsWith("thumbnail") ? (
+        image.key.split("/")[1]?.startsWith("thumbnail") ? (
           <div key={image.key} className='relative aspect-square group'>
             <Image
               loading='lazy'
