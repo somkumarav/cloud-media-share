@@ -34,6 +34,10 @@ const config: Config = {
         DEFAULT: "#c52828",
         background: "#c5282840",
       },
+      caution: {
+        DEFAULT: "#f5a623",
+        background: "#f5a62340",
+      },
       card: {
         DEFAULT: "hsl(var(--card))",
         foreground: "hsl(var(--card-foreground))",
