@@ -67,7 +67,7 @@ export const changeAlbumName = withServerActionAsyncCatcher<
 const checkIfAlbumExistsSchema = z.string();
 export const checkIfAlbumExists = withServerActionAsyncCatcher<
   string,
-  ServerActionReturnType<Album>
+  ServerActionReturnType<Album & { albumSize: number }>
 >(async (args) => {
   const validatedData = await checkIfAlbumExistsSchema.safeParse(args);
   if (!validatedData.success) {
@@ -79,9 +79,25 @@ export const checkIfAlbumExists = withServerActionAsyncCatcher<
     where: {
       id: Number(decryptedData),
     },
+    include: {
+      albumContents: true,
+    },
   });
+
+  const albumSize =
+    data?.albumContents.reduce((accumulator, item) => {
+      return accumulator + item.fileSize;
+    }, 0) ?? 0;
+
   if (!data) {
     throw new ErrorHandler("Invalid album", "BAD_REQUEST");
   }
-  return new SuccessResponse("Album exists", 201, data).serialize();
+  return new SuccessResponse("Album exists", 201, {
+    ...{
+      title: data.title,
+      id: data.id,
+      createdAt: data.createdAt,
+      albumSize: albumSize,
+    },
+  }).serialize();
 });
