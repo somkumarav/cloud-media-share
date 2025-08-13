@@ -10,6 +10,7 @@ import { getSignedURL } from "@/actions/upload.actions";
 import { useRouter } from "next/navigation";
 import { createThumbnail } from "@/lib/create-thumbnail";
 import { acceptedFileType } from "@/lib/accepted-types";
+import { useUploadContext } from "@/contexts/upload-context";
 
 const computeSHA256 = async (file: File) => {
   const buffer = await file.arrayBuffer();
@@ -23,6 +24,7 @@ const computeSHA256 = async (file: File) => {
 
 export const FileInput = (props: { directory: string }) => {
   const router = useRouter();
+  const { addUploadedImage } = useUploadContext();
   const [files, setFiles] = useState<
     { isUploaded: boolean; isError: boolean; file: File }[]
   >([]);
@@ -84,6 +86,22 @@ export const FileInput = (props: { directory: string }) => {
       headers: {
         "Content-Type": file.type,
       },
+    });
+
+    // Store the uploaded image in context for immediate gallery display
+    const imageId = `${props.directory}-${file.name}-${Date.now()}`;
+    const imageUrl = URL.createObjectURL(file);
+    const thumbnailUrl = URL.createObjectURL(thumbnail);
+
+    addUploadedImage({
+      id: imageId,
+      fileName: file.name,
+      imageUrl,
+      thumbnailUrl,
+      fileSize: file.size,
+      fileType: file.type,
+      albumId: props.directory,
+      uploadedAt: new Date(),
     });
 
     setFiles((prev) =>

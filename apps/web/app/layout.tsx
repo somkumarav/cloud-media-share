@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
+import { UploadProvider } from "@/contexts/upload-context";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -23,7 +24,9 @@ export default function RootLayout({
       <body
         className={`${outfit.className} antialiased min-h-screen flex flex-col `}
       >
-        <main className='flex-1 mx-5 md:mx-10'>{children}</main>
+        <UploadProvider>
+          <main className='flex-1 mx-5 md:mx-10'>{children}</main>
+        </UploadProvider>
       </body>
     </html>
   );
