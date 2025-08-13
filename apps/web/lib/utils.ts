@@ -1,25 +1,23 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { GIGABYTE, KILOBYTE, MEGABYTE } from "@/lib/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-function truncateDecimals(number: number, decimals: number) {
-  const factor = Math.pow(10, decimals);
-  return Math.trunc(number * factor) / factor;
-}
-
-export function formatFileSize(fileSize: number): {
-  fileSize: number;
+export function formatFileSize(fileSize: bigint): {
+  fileSize: bigint | number;
   unit: "B" | "KB" | "MB" | "GB";
   formatted: string;
 } {
-  if (fileSize < 1024)
+  if (fileSize < KILOBYTE) {
     return { fileSize, unit: "B", formatted: `${fileSize} B` };
+  }
 
-  if (fileSize < 1024 * 1000) {
-    const formattedSize = truncateDecimals(fileSize / 1024, 0);
+  const scaledSize = fileSize * 100n;
+  if (fileSize < MEGABYTE) {
+    const formattedSize = Number(scaledSize / KILOBYTE) / 100;
     return {
       fileSize: formattedSize,
       unit: "KB",
@@ -27,8 +25,8 @@ export function formatFileSize(fileSize: number): {
     };
   }
 
-  if (fileSize < 1024 * 1024 * 1000) {
-    const formattedSize = truncateDecimals(fileSize / (1024 * 1000), 2);
+  if (fileSize < GIGABYTE) {
+    const formattedSize = Number(scaledSize / MEGABYTE) / 100;
     return {
       fileSize: formattedSize,
       unit: "MB",
@@ -36,13 +34,10 @@ export function formatFileSize(fileSize: number): {
     };
   }
 
-  const formattedFileSize = truncateDecimals(
-    fileSize / (1024 * 1000 * 1000),
-    2
-  );
+  const formattedSize = Number(scaledSize / GIGABYTE) / 100;
   return {
-    fileSize: truncateDecimals(fileSize / (1024 * 1000 * 1000), 2),
+    fileSize: formattedSize,
     unit: "GB",
-    formatted: `${formattedFileSize} GB`,
+    formatted: `${formattedSize} GB`,
   };
 }

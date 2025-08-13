@@ -14,7 +14,7 @@ type TProps = {
   albumId: number | null;
 };
 const IndividualImage = (image: TProps) => {
-  const fileSize = formatFileSize(Number(image.fileSize));
+  const fileSize = formatFileSize(image.fileSize);
   return (
     <div key={image.id} className='rounded-md border border-white/10'>
       <div className='relative aspect-square group'>
