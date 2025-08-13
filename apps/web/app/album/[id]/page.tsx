@@ -4,9 +4,8 @@ import { checkIfAlbumExists } from "@/actions/album.actions";
 import { AlbumTopBar } from "@/components/album-topbar";
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const { id } = await params;
-  const directory = String(id);
-  const isValidAlbum = await checkIfAlbumExists(id);
+  const { id: slug } = await params;
+  const isValidAlbum = await checkIfAlbumExists(slug);
 
   if (!isValidAlbum.status) {
     return <InvalidAlbum />;
@@ -20,7 +19,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
           albumName={isValidAlbum.data?.title}
           albumSize={isValidAlbum.data?.albumSize}
         />
-        <ImageGallery directory={directory} />
+        <ImageGallery directory={slug} />
       </div>
     </div>
   );

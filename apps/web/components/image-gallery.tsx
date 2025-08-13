@@ -12,7 +12,19 @@ export const ImageGallery = async ({ directory }: { directory: string }) => {
   return (
     <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
       {imageUrls.map((image) => (
-        <IndividualImage key={image.id} {...image} />
+        <IndividualImage
+          key={image.id}
+          {...{
+            albumId: image.albumId,
+            createdAt: image.createdAt,
+            fileName: image.filename,
+            fileSize: image.fileSize,
+            fileType: image.type,
+            id: image.id,
+            imageURL: image.imageURL,
+            thumbnailURL: image.thumbnailURL,
+          }}
+        />
       ))}
     </div>
   );

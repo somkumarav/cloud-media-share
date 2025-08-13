@@ -1,25 +1,25 @@
 "use server";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { s3 } from "@/lib/s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import prisma from "@repo/db/client";
+import { s3 } from "@/lib/s3";
 import { decrypt } from "@/lib/encryption";
 
 export async function listImagesInDirectory(directory: string) {
   const decryptedAlbumId = Number(decrypt(directory));
-  const albumContent = await prisma.albumContents.findMany({
+  const albumContent = await prisma.media.findMany({
     where: {
       albumId: decryptedAlbumId,
     },
   });
 
   try {
-    const imageObjects = albumContent.filter((obj) => obj.fileType === "image");
+    const imageObjects = albumContent.filter((obj) => obj.type === "IMAGE");
 
-    const imageUrls = await Promise.all(
+    const imageURLs = await Promise.all(
       imageObjects.map(async (obj) => {
-        const imageName = `${directory}/${obj.fileName}`;
-        const thumbnailImageName = `${directory}/thumbnail-${obj.fileName}`;
+        const imageName = `${directory}/${obj.filename}`;
+        const thumbnailImageName = `${directory}/thumbnail-${obj.filename}`;
 
         const getObjectCommand = new GetObjectCommand({
           Bucket: "test",
@@ -30,17 +30,17 @@ export async function listImagesInDirectory(directory: string) {
           Key: thumbnailImageName,
         });
 
-        const imageUrl = await getSignedUrl(s3, getObjectCommand, {
+        const imageURL = await getSignedUrl(s3, getObjectCommand, {
           expiresIn: 36000,
         });
-        const thumbnailUrl = await getSignedUrl(s3, getThumbnailObjectCommand, {
+        const thumbnailURL = await getSignedUrl(s3, getThumbnailObjectCommand, {
           expiresIn: 36000,
         });
-        return { ...obj, imageUrl, thumbnailUrl };
+        return { ...obj, imageURL, thumbnailURL };
       })
     );
 
-    return imageUrls;
+    return imageURLs;
   } catch (error) {
     console.error("Error listing objects in R2:", error);
     throw error;
