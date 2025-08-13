@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button";
 
 import { cn } from "@/lib/utils";
 import ImageUpload from "@/components/image-upload";
-import { getSignedURL } from "@/actions/upload.actions";
+import { getSignedURL, uploadCompleted } from "@/actions/upload.actions";
 import { useRouter } from "next/navigation";
-import { createThumbnail } from "@/lib/create-thumbnail";
 import { acceptedFileType } from "@/lib/accepted-types";
 import { useUploadContext } from "@/contexts/upload-context";
 
@@ -42,12 +41,13 @@ export const FileInput = (props: { directory: string }) => {
   }, [warning]);
 
   const uploadFile = async (file: File) => {
+    const checksum = await computeSHA256(file);
     const getSignedURLAction = await getSignedURL({
       fileName: file.name,
       directory: props.directory,
       fileSize: file.size,
-      fileType: file.type,
-      checksum: await computeSHA256(file),
+      mimeType: file.type,
+      checksum: checksum,
     });
 
     if (!getSignedURLAction.status) {
@@ -68,11 +68,9 @@ export const FileInput = (props: { directory: string }) => {
       );
       return;
     }
-    if (!getSignedURLAction.data?.url) return;
+    if (!getSignedURLAction.data?.signedURL) return;
 
-    const thumbnail = await createThumbnail(file, 550, 550);
-
-    const response = await fetch(getSignedURLAction.data?.url, {
+    const response = await fetch(getSignedURLAction.data?.signedURL, {
       method: "PUT",
       body: file,
       headers: {
@@ -80,24 +78,20 @@ export const FileInput = (props: { directory: string }) => {
       },
     });
 
-    await fetch(getSignedURLAction.data.thumbnailUrl, {
-      method: "PUT",
-      body: thumbnail,
-      headers: {
-        "Content-Type": file.type,
-      },
-    });
+    if (!response.ok) {
+      throw new Error("Upload failed");
+    }
+
+    uploadCompleted({ mediaId: getSignedURLAction.data.mediaId });
 
     // Store the uploaded image in context for immediate gallery display
     const imageId = `${props.directory}-${file.name}-${Date.now()}`;
     const imageUrl = URL.createObjectURL(file);
-    const thumbnailUrl = URL.createObjectURL(thumbnail);
 
     addUploadedImage({
       id: imageId,
       fileName: file.name,
       imageUrl,
-      thumbnailUrl,
       fileSize: file.size,
       fileType: file.type,
       albumId: props.directory,
@@ -120,23 +114,8 @@ export const FileInput = (props: { directory: string }) => {
       )
     );
 
-    console.log({ response });
-
     return response;
   };
-
-  // const uploadSequentially = async (
-  //   uniqueFiles: {
-  //     file: File;
-  //     isUploaded: boolean;
-  //   }[]
-  // ) => {
-  //   for (const file of uniqueFiles) {
-  //     await uploadFile(file.file);
-  //   }
-  //   router.refresh();
-  //   setIsUploading(false);
-  // };
 
   const uploadParallelly = async (
     uniqueFiles: {

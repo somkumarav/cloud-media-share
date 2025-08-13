@@ -3,29 +3,35 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { withServerActionAsyncCatcher } from "@/lib/async-catch";
 import { SuccessResponse } from "@/lib/success";
 import { ServerActionReturnType } from "@/types/api.types";
-import { TGetSignedURL } from "@/types/upload";
+import {
+  TGetSignedURL,
+  TUploadCompleted,
+  UploadCompletedSchema,
+} from "@/types/upload";
 import { s3 } from "@/lib/s3";
 import { GetSignedURLSchema } from "@/types/upload";
 import { ErrorHandler } from "@/lib/error";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import prisma from "@repo/db/client";
 import { decrypt } from "@/lib/encryption";
+import { addToQueue } from "@repo/queue/index";
+import { GIGABYTE } from "@/lib/constants";
 
 export const getSignedURL = withServerActionAsyncCatcher<
   TGetSignedURL,
-  ServerActionReturnType<{ url: string; thumbnailUrl: string }>
+  ServerActionReturnType<{ signedURL: string; mediaId: number }>
 >(async (args) => {
   const validatedData = GetSignedURLSchema.safeParse(args);
 
   if (!validatedData.success) {
     throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
   }
-  const { fileName, directory, fileSize, fileType, checksum } =
+  const { fileName, directory, fileSize, mimeType, checksum } =
     validatedData.data;
 
   const decryptedAlbumId = Number(decrypt(directory));
 
-  const albumContent = await prisma.albumContents.groupBy({
+  const albumContent = await prisma.media.groupBy({
     by: ["albumId"],
     where: {
       albumId: decryptedAlbumId,
@@ -37,7 +43,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
 
   const totalFileSize = albumContent[0]?._sum?.fileSize ?? 0;
 
-  if (totalFileSize + fileSize > 1000000000) {
+  if (BigInt(totalFileSize) + BigInt(fileSize) > GIGABYTE) {
     throw new ErrorHandler(
       "1GB size limit exceeded",
       "INSUFFICIENT_PERMISSIONS"
@@ -47,35 +53,66 @@ export const getSignedURL = withServerActionAsyncCatcher<
   const command = new PutObjectCommand({
     Bucket: "test",
     Key: `${directory}/${fileName}`,
-    ContentType: fileType,
+    ContentType: mimeType,
     ContentLength: fileSize,
     ChecksumSHA256: checksum,
-  });
-
-  const thumbnailCommand = new PutObjectCommand({
-    Bucket: "test",
-    Key: `${directory}/thumbnail-${fileName}`,
   });
 
   const signedURL = await getSignedUrl(s3, command, {
     expiresIn: 60,
   });
-  const thumbnailSignedURL = await getSignedUrl(s3, thumbnailCommand, {
-    expiresIn: 60,
-  });
 
-  await prisma.albumContents.create({
+  const mediaData = await prisma.media.create({
     data: {
-      fileType: fileType.startsWith("image") ? "image" : "video",
-      fileSize,
-      fileName,
-      url: signedURL.split("?")[0]!,
+      originalName: fileName,
+      filename: fileName,
+      mimeType,
+      fileSize: BigInt(fileSize),
+      type: mimeType.startsWith("image/") ? "IMAGE" : "VIDEO",
+      r2Key: `${directory}/${fileName}`,
       albumId: decryptedAlbumId,
+      variants: {
+        create: [
+          {
+            filename: fileName,
+            fileSize: BigInt(fileSize),
+            mimeType,
+            format: mimeType.split("/")[1] ?? "",
+            r2Key: `${directory}/${fileName}`,
+            type: "ORIGINAL",
+          },
+        ],
+      },
     },
   });
 
   return new SuccessResponse("Album exists", 201, {
-    url: signedURL,
-    thumbnailUrl: thumbnailSignedURL,
+    signedURL,
+    mediaId: mediaData.id,
   }).serialize();
+});
+
+export const uploadCompleted = withServerActionAsyncCatcher<
+  TUploadCompleted,
+  ServerActionReturnType
+>(async (args) => {
+  const validatedData = await UploadCompletedSchema.safeParseAsync(args);
+
+  if (!validatedData.success) {
+    throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
+  }
+  const req = validatedData.data;
+
+  const mediaData = await prisma.media.update({
+    where: { id: req.mediaId },
+    data: { status: "PENDING" },
+  });
+
+  await addToQueue({
+    mediaId: req.mediaId.toString(),
+    r2Key: mediaData.r2Key,
+    action: "EXTRACT_METADATA_AND_PROCESS",
+  });
+
+  return new SuccessResponse("Added to queue", 200).serialize();
 });

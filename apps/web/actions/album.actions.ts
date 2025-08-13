@@ -10,32 +10,29 @@ import { ErrorHandler } from "@/lib/error";
 import { Album } from "@repo/db/client";
 import { ChangeAlbumNameSchema, TChangeAlbumNameSchema } from "@/types/album";
 import { revalidatePath } from "next/cache";
+import { GIGABYTE } from "@/lib/constants";
 
 export const createAlbum = async () => {
-  const albumContentSum = await prisma.albumContents.groupBy({
-    by: ["albumId"],
-    _sum: {
-      fileSize: true,
-    },
-  });
-  const totalSize = albumContentSum.reduce((total, item) => {
-    return item._sum.fileSize ? total + item._sum.fileSize : total;
-  }, 0);
+  const allAlbums = await prisma.album.findMany();
 
-  if (totalSize > 12000000000) {
+  const totalSize = allAlbums.reduce((accumulator, album) => {
+    return accumulator + BigInt(album.totalSize);
+  }, 0n);
+
+  if (totalSize > 12 * Number(GIGABYTE)) {
     redirect("/service-unavailable");
   }
 
+  const slug = encrypt(`${Number(allAlbums.pop()?.id) + 1}`);
+
   const data = await prisma.album.create({
     data: {
-      title: "",
+      slug,
     },
   });
 
-  const encryptedData = encrypt(`${data.id}`);
-
   if (data.id) {
-    redirect(`/album/${encryptedData}`);
+    redirect(`/album/${slug}`);
   } else {
     throw new Error("Failed to create album");
   }
@@ -67,7 +64,7 @@ export const changeAlbumName = withServerActionAsyncCatcher<
 const checkIfAlbumExistsSchema = z.string();
 export const checkIfAlbumExists = withServerActionAsyncCatcher<
   string,
-  ServerActionReturnType<Album & { albumSize: number }>
+  ServerActionReturnType<Album & { albumSize: bigint }>
 >(async (args) => {
   const validatedData = await checkIfAlbumExistsSchema.safeParse(args);
   if (!validatedData.success) {
@@ -80,24 +77,19 @@ export const checkIfAlbumExists = withServerActionAsyncCatcher<
       id: Number(decryptedData),
     },
     include: {
-      albumContents: true,
+      media: true,
     },
   });
 
   const albumSize =
-    data?.albumContents.reduce((accumulator, item) => {
+    data?.media.reduce((accumulator, item) => {
       return accumulator + item.fileSize;
-    }, 0) ?? 0;
+    }, 0n) ?? 0n;
 
   if (!data) {
     throw new ErrorHandler("Invalid album", "BAD_REQUEST");
   }
   return new SuccessResponse("Album exists", 201, {
-    ...{
-      title: data.title,
-      id: data.id,
-      createdAt: data.createdAt,
-      albumSize: albumSize,
-    },
+    ...{ ...data, albumSize: albumSize },
   }).serialize();
 });
