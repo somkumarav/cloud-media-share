@@ -1,0 +1,28 @@
+{
+  "name": "@repo/queue",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/worker.js"
+  },
+  "exports": {
+    "./*":"./index.ts"
+  },
+  "dependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "node": "^18.20.0",
+    "typescript": "5.8.2",
+    "dotenv": "^17.2.1",
+    "ioredis": "^5.3.2",
+    "zod": "^3.23.8",
+    "zod-error": "^1.5.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
