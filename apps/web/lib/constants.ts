@@ -1,1 +1,3 @@
-export const ONE_GIGABYTE = 1000_000_000;
+export const KILOBYTE = 1000n;
+export const MEGABYTE = KILOBYTE * KILOBYTE;
+export const GIGABYTE = MEGABYTE * KILOBYTE;

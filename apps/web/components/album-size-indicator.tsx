@@ -1,8 +1,8 @@
 import { cn, formatFileSize } from "@/lib/utils";
-import { ONE_GIGABYTE } from "@/lib/constants";
+import { GIGABYTE } from "@/lib/constants";
 
 export const AlbumSizeIndicator = ({ albumSize }: { albumSize?: bigint }) => {
-  const totalSize = BigInt(ONE_GIGABYTE);
+  const totalSize = GIGABYTE;
   const rawProgressWidth = albumSize ? (albumSize * 10000n) / totalSize : 0n;
   const progressWidth = Number(rawProgressWidth) / 100;
 
