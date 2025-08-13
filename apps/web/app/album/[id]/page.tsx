@@ -15,7 +15,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     <div>
       <div className='flex w-full flex-col mb-5'>
         <AlbumTopBar
-          directory={directory}
+          directory={slug}
           albumName={isValidAlbum.data?.title}
           albumSize={isValidAlbum.data?.albumSize}
         />

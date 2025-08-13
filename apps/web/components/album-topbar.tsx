@@ -1,7 +1,7 @@
 import { FileInput } from "@/components/file-input";
 import { AlbumNameInput } from "@/components/album-name-input";
 import { CopyURLButton } from "@/components/copy-url-button";
-import { AlbumSizeIndicator } from "./album-size-indicator";
+import { AlbumSizeIndicator } from "@/components/album-size-indicator";
 
 export const AlbumTopBar = ({
   albumName,
@@ -10,7 +10,7 @@ export const AlbumTopBar = ({
 }: {
   albumName?: string;
   directory: string;
-  albumSize?: number;
+  albumSize?: bigint;
 }) => {
   return (
     <div className='mb-10'>

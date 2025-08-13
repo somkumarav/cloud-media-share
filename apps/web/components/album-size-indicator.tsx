@@ -1,14 +1,15 @@
 import { cn, formatFileSize } from "@/lib/utils";
+import { ONE_GIGABYTE } from "@/lib/constants";
 
-export const AlbumSizeIndicator = ({ albumSize }: { albumSize?: number }) => {
-  const progressWidth = albumSize
-    ? Number(((albumSize / 500000000) * 100).toFixed(2))
-    : 0;
+export const AlbumSizeIndicator = ({ albumSize }: { albumSize?: bigint }) => {
+  const totalSize = BigInt(ONE_GIGABYTE);
+  const rawProgressWidth = albumSize ? (albumSize * 10000n) / totalSize : 0n;
+  const progressWidth = Number(rawProgressWidth) / 100;
 
   return (
     <div className='flex flex-col items-stretch min-w-40'>
       <div className='text-xs truncate'>
-        {formatFileSize(albumSize ?? 0).formatted} / 1 GB
+        {formatFileSize(albumSize ?? 0n).formatted} / 1 GB
       </div>
       <div
         className={cn(
