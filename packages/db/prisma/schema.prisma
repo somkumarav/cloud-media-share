@@ -7,20 +7,192 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Album {
-  id            Int             @id @default(autoincrement())
-  title         String
-  createdAt     DateTime        @default(now()) @db.Timestamp(6)
-  albumContents AlbumContents[]
+enum UserRole {
+  ADMIN
+  USER
 }
 
-model AlbumContents {
-  id        Int      @id @default(autoincrement())
-  fileName  String
-  fileType  String
-  fileSize  Int
-  url       String   @db.VarChar(500)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  Album     Album?   @relation(fields: [albumId], references: [id])
-  albumId   Int?
+enum SubscriptionPlan {
+  FREE
+  BASIC
+  PRO
+  ENTERPRISE
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum ProcessingStatus {
+  UPLOADING
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum VariantType {
+  THUMBNAIL // 200x200
+  SMALL // 400x400
+  MEDIUM // 800x800
+  LARGE // 1200x1200
+  ORIGINAL // original size
+  VIDEO_480P // 480p video
+  VIDEO_720P // 720p video
+  VIDEO_1080P // 1080p video
+}
+
+enum DownloadType {
+  SINGLE
+  BULK_ZIP
+}
+
+enum AnalyticsEvent {
+  ALBUM_VIEW
+  MEDIA_VIEW
+  ALBUM_SHARE
+  MEDIA_DOWNLOAD
+  ALBUM_DOWNLOAD
+}
+
+model Album {
+  id          Int     @id @default(autoincrement())
+  title       String  @default("Enter your album name here")
+  description String? @db.Text
+  slug        String? @unique
+
+  isPublic Boolean @default(false)
+
+  media      Media[] @relation("AlbumMedia")
+  mediaCount Int     @default(0)
+
+  allowDownload Boolean @default(true)
+
+  totalSize     BigInt @default(0) // total size in bytes
+  viewCount     Int    @default(0)
+  downloadCount Int    @default(0)
+
+  // Ownership
+  // userId       String
+  // user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Media     Media?   @relation(fields: [mediaId], references: [id])
+  mediaId   Int?
+
+  @@map("albums")
+}
+
+model Media {
+  id Int @id @default(autoincrement())
+
+  originalName String // user's original filename
+  filename     String // stored filename
+  mimeType     String
+  fileSize     BigInt // size in bytes
+  type         MediaType
+
+  r2Key    String @unique
+  r2Bucket String @default("main")
+
+  originalUrl String?
+
+  status ProcessingStatus @default(UPLOADING)
+
+  variants MediaVariant[]
+
+  width       Int?
+  height      Int?
+  aspectRatio Float?
+
+  // EXIF and metadata
+  metadata Json? // store EXIF, location, camera info, etc.
+
+  albumId Int
+  album   Album @relation("AlbumMedia", fields: [albumId], references: [id], onDelete: Cascade)
+
+  // User relationship
+  // userId           String
+  // user             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Analytics
+  viewCount     Int        @default(0)
+  downloadCount Int        @default(0)
+  downloads     Download[]
+
+  uploadedAt  DateTime  @default(now())
+  processedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  Album       Album[]
+
+  @@map("media")
+}
+
+model MediaVariant {
+  id      Int   @id @default(autoincrement())
+  mediaId Int
+  media   Media @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  type    VariantType // THUMBNAIL, SMALL, MEDIUM, LARGE, etc.
+  format  String // webp, jpg, mp4, etc.
+  quality String? // 480p, 720p, 1080p for videos
+
+  filename String
+  r2Key    String @unique
+  fileSize BigInt
+  mimeType String
+
+  width  Int?
+  height Int?
+
+  isReady Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@unique([mediaId, type]) // one variant per type per media
+  @@map("media_variants")
+}
+
+model Download {
+  id Int @id @default(autoincrement())
+
+  mediaId Int?
+  media   Media?  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  albumId String? // for bulk downloads
+
+  // Who downloaded
+  // userId      String?
+  // user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  // ipAddress   String?  // for anonymous downloads
+  userAgent String?
+
+  downloadType DownloadType // SINGLE, BULK_ZIP
+  fileSize     BigInt?
+
+  createdAt DateTime @default(now())
+
+  @@map("downloads")
+}
+
+model Analytics {
+  id Int @id @default(autoincrement())
+
+  event      AnalyticsEvent
+  entityType String // "album", "media"
+  entityId   String
+
+  userId    String?
+  ipAddress String?
+  userAgent String?
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([event, createdAt])
+  @@map("analytics")
 }
