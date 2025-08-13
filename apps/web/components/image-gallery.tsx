@@ -22,7 +22,7 @@ export const ImageGallery = async ({ directory }: { directory: string }) => {
             fileType: image.type,
             id: image.id,
             imageURL: image.imageURL,
-            thumbnailURL: image.thumbnailURL,
+            thumbnailURL: image.thumbnailURL ?? null,
           }}
         />
       ))}
