@@ -60,7 +60,7 @@ export const ImageGallery = ({ directory }: { directory: string }) => {
       fileSize: BigInt(localImage.fileSize),
       fileType: localImage.fileType,
       imageURL: localImage.imageUrl,
-      thumbnailURL: localImage.thumbnailUrl,
+      thumbnailURL: localImage.imageUrl,
     })),
   ];
 

@@ -11,7 +11,6 @@ interface UploadedImage {
   id: string;
   fileName: string;
   imageUrl: string;
-  thumbnailUrl: string;
   fileSize: number;
   fileType: string;
   albumId: string;
