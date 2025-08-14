@@ -94,7 +94,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
 
 export const uploadCompleted = withServerActionAsyncCatcher<
   TUploadCompleted,
-  ServerActionReturnType
+  ServerActionReturnType<{ imageId: number }>
 >(async (args) => {
   const validatedData = await UploadCompletedSchema.safeParseAsync(args);
 
@@ -114,5 +114,7 @@ export const uploadCompleted = withServerActionAsyncCatcher<
     action: "EXTRACT_METADATA_AND_PROCESS",
   });
 
-  return new SuccessResponse("Added to queue", 200).serialize();
+  return new SuccessResponse("Added to queue", 200, {
+    imageId: mediaData.id,
+  }).serialize();
 });

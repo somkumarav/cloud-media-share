@@ -82,14 +82,18 @@ export const FileInput = (props: { encryptedToken: string }) => {
       throw new Error("Upload failed");
     }
 
-    uploadCompleted({ mediaId: getSignedURLAction.data.mediaId });
+    const uploadCompleteResponse = await uploadCompleted({
+      mediaId: getSignedURLAction.data.mediaId,
+    });
+    if (!uploadCompleteResponse.status) {
+      throw new Error("Upload completion failed");
+    }
 
     // Store the uploaded image in context for immediate gallery display
-    const imageId = `${props.encryptedToken}-${file.name}-${Date.now()}`;
     const imageUrl = URL.createObjectURL(file);
 
     addUploadedImage({
-      id: imageId,
+      id: uploadCompleteResponse.data?.imageId ?? 0,
       fileName: file.name,
       imageUrl,
       fileSize: file.size,

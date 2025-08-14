@@ -1,14 +1,8 @@
 "use client";
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface UploadedImage {
-  id: string;
+  id: number;
   fileName: string;
   imageUrl: string;
   fileSize: number;
@@ -20,7 +14,6 @@ interface UploadedImage {
 interface UploadContextType {
   uploadedImages: UploadedImage[];
   addUploadedImage: (image: UploadedImage) => void;
-  removeUploadedImage: (id: string) => void;
   clearUploadedImages: (encryptedToken: string) => void;
   getUploadedImagesForAlbum: (encryptedToken: string) => UploadedImage[];
 }
@@ -41,40 +34,8 @@ interface UploadProviderProps {
 
 export const UploadProvider: React.FC<UploadProviderProps> = ({ children }) => {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
-
-  // Cleanup old images every 5 minutes
-  useEffect(() => {
-    const cleanupInterval = setInterval(
-      () => {
-        const now = new Date();
-        const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
-
-        setUploadedImages((prev) =>
-          prev.filter((img) => img.uploadedAt > fiveMinutesAgo)
-        );
-      },
-      5 * 60 * 1000
-    ); // 5 minutes
-
-    return () => clearInterval(cleanupInterval);
-  }, []);
-
-  // Cleanup on page unload
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      setUploadedImages([]);
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, []);
-
   const addUploadedImage = (image: UploadedImage) => {
     setUploadedImages((prev) => [...prev, image]);
-  };
-
-  const removeUploadedImage = (id: string) => {
-    setUploadedImages((prev) => prev.filter((img) => img.id !== id));
   };
 
   const clearUploadedImages = (encryptedToken: string) => {
@@ -92,7 +53,6 @@ export const UploadProvider: React.FC<UploadProviderProps> = ({ children }) => {
   const value: UploadContextType = {
     uploadedImages,
     addUploadedImage,
-    removeUploadedImage,
     clearUploadedImages,
     getUploadedImagesForAlbum,
   };

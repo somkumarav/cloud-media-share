@@ -14,6 +14,7 @@ interface BucketImage {
   fileType: string;
   imageURL: string;
   thumbnailURL: string;
+  isLocal: boolean;
 }
 
 export const ImageGallery = ({
@@ -39,6 +40,7 @@ export const ImageGallery = ({
           fileType: image.type,
           imageURL: image.imageURL,
           thumbnailURL: image.thumbnailURL || image.imageURL, // Fallback to main image if thumbnail is null
+          isLocal: false,
         }));
         setBucketImages(mappedImages);
       } catch (error) {
@@ -57,13 +59,14 @@ export const ImageGallery = ({
   const allImages = [
     ...bucketImages,
     ...localImages.map((localImage) => ({
-      id: parseInt(localImage.id.split("-").pop() || "0"),
+      id: localImage.id,
       createdAt: localImage.uploadedAt,
       fileName: localImage.fileName,
       fileSize: BigInt(localImage.fileSize),
       fileType: localImage.fileType,
       imageURL: localImage.imageUrl,
       thumbnailURL: localImage.imageUrl,
+      isLocal: true,
     })),
   ];
 
@@ -84,6 +87,7 @@ export const ImageGallery = ({
             id: image.id,
             imageURL: image.imageURL,
             thumbnailURL: image.thumbnailURL,
+            isLocal: image.isLocal,
           }}
         />
       ))}

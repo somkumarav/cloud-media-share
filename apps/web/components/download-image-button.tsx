@@ -1,28 +1,56 @@
 "use client";
 import { DownloadCloudIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { downloadImage } from "../actions/download.actions";
 
-type ImageObject = {
-  key: string;
-  url: string;
-};
-
-export const DownloadImageButton = (props: { image: ImageObject }) => {
-  const handleDownload = async (e: React.MouseEvent, image: ImageObject) => {
+export const DownloadImageButton = (props: {
+  imageId: number;
+  isLocal?: boolean;
+  imageURL?: string;
+}) => {
+  const handleDownload = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const filename = image.key.split("/").pop() || "image";
-    const downloadUrl = `/api/download?url=${encodeURIComponent(
-      image.url
-    )}&filename=${encodeURIComponent(filename)}`;
+    if (props.isLocal && props.imageURL) {
+      try {
+        const response = await fetch(props.imageURL);
+        const blob = await response.blob();
+        const blobURL = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobURL;
+        link.download = "";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobURL);
+      } catch (error) {
+        console.error("Error downloading local image:", error);
+      }
+      return;
+    }
 
-    window.location.href = downloadUrl;
+    try {
+      const signedURL = await downloadImage(props.imageId);
+
+      const response = await fetch(signedURL);
+      const blob = await response.blob();
+      const blobURL = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobURL;
+      link.download = "";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobURL);
+    } catch (error) {
+      console.error("Error downloading image:", error);
+    }
   };
 
   return (
     <Button
-      onClick={(e) => handleDownload(e, props.image)}
+      onClick={(e) => handleDownload(e)}
       className='p-4 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#2a452a]'
       aria-label='Download image'
     >

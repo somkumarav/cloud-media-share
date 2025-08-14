@@ -11,6 +11,7 @@ type TProps = {
   fileName: string;
   fileType: string;
   createdAt: Date;
+  isLocal: boolean;
 };
 const IndividualImage = (image: TProps) => {
   const fileSize = formatFileSize(image.fileSize);
@@ -19,7 +20,9 @@ const IndividualImage = (image: TProps) => {
       <div className='relative aspect-square group'>
         <div className='absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-200 flex items-center justify-center'>
           <DownloadImageButton
-            image={{ key: image.fileName, url: image.imageURL }}
+            imageId={image.id}
+            isLocal={image.isLocal}
+            imageURL={image.imageURL}
           />
         </div>
         <Image
