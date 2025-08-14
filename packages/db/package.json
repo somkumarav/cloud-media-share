@@ -13,7 +13,7 @@
   "keywords": [],
   "author": "",
   "exports": {
-    "./client":"./index.ts"
+    "./client":"./src/index.ts"
   },
   "dependencies": {
     "@repo/eslint-config": "workspace:*",
@@ -21,10 +21,10 @@
     "@types/node": "^22.15.3",
     "node": "^18.20.0",
     "typescript": "5.8.2",
-    "prisma": "^6.13.0"
+    "@prisma/client": "6.13.0"
   },
   "license": "ISC",
   "devDependencies": {
-    "@prisma/client": "6.13.0"
+    "prisma": "^6.13.0"
   }
 }
