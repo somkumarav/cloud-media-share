@@ -44,6 +44,9 @@ importers:
       '@repo/queue':
         specifier: workspace:*
         version: link:../../packages/queue
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       aws-sdk:
         specifier: ^2.1691.0
         version: 2.1692.0
@@ -114,6 +117,9 @@ importers:
       '@repo/queue':
         specifier: workspace:*
         version: link:../../packages/queue
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       dotenv:
         specifier: ^17.2.1
         version: 17.2.1
@@ -278,6 +284,36 @@ importers:
       typescript:
         specifier: 5.8.2
         version: 5.8.2
+
+  packages/utils:
+    dependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.17.1
+      dotenv:
+        specifier: ^17.2.1
+        version: 17.2.1
+      ioredis:
+        specifier: ^5.3.2
+        version: 5.7.0
+      node:
+        specifier: ^18.20.0
+        version: 18.20.8
+      typescript:
+        specifier: 5.8.2
+        version: 5.8.2
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
+      zod-error:
+        specifier: ^1.5.0
+        version: 1.5.0
 
 packages:
 

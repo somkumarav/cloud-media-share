@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import ImageUpload from "@/components/image-upload";
 import { getSignedURL, uploadCompleted } from "@/actions/upload.actions";
 import { useRouter } from "next/navigation";
-import { acceptedFileType } from "@/lib/accepted-types";
+import { acceptedFileType } from "@repo/utils/index";
 import { useUploadContext } from "@/contexts/upload-context";
 
 const computeSHA256 = async (file: File) => {
