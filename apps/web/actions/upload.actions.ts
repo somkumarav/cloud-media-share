@@ -13,7 +13,7 @@ import { GetSignedURLSchema } from "@/types/upload";
 import { ErrorHandler } from "@/lib/error";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import prisma from "@repo/db/client";
-import { decrypt } from "@/lib/encryption";
+import { getDecryptedId } from "@repo/utils/index";
 import { addToQueue } from "@repo/queue/index";
 import { GIGABYTE } from "@repo/utils/index";
 
@@ -29,7 +29,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
   const { fileName, encryptedToken, fileSize, mimeType, checksum } =
     validatedData.data;
 
-  const decryptedAlbumId = Number(decrypt(encryptedToken));
+  const decryptedAlbumId = Number(getDecryptedId(encryptedToken));
 
   const albumContent = await prisma.media.groupBy({
     by: ["albumId"],

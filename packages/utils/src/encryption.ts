@@ -27,3 +27,21 @@ export function decrypt(text: string): string {
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
 }
+
+export const generateEncryptedId = (id: string | number): string => {
+  try {
+    return encrypt(id.toString());
+  } catch (error) {
+    console.error("Encryption failed:", error);
+    throw new Error("Invalid ID for encryption");
+  }
+};
+
+export const getDecryptedId = (encryptedId: string): string => {
+  try {
+    return decrypt(encryptedId);
+  } catch (error) {
+    console.error("Decryption failed:", error);
+    throw new Error("Invalid encrypted ID");
+  }
+};

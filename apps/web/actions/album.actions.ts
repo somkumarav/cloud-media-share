@@ -1,7 +1,7 @@
 "use server";
 import { redirect } from "next/navigation";
 import prisma from "@repo/db/client";
-import { decrypt, encrypt } from "@/lib/encryption";
+import { getDecryptedId, generateEncryptedId } from "@repo/utils/index";
 import { withServerActionAsyncCatcher } from "@/lib/async-catch";
 import { ServerActionReturnType } from "@/types/api.types";
 import { z } from "zod";
@@ -23,7 +23,7 @@ export const createAlbum = async () => {
     redirect("/service-unavailable");
   }
 
-  const encryptedToken = encrypt(`${Number(allAlbums.pop()?.id ?? 0) + 1}`);
+  const encryptedToken = generateEncryptedId(allAlbums.pop()?.id ?? 0 + 1);
 
   const data = await prisma.album.create({
     data: {
@@ -46,7 +46,7 @@ export const changeAlbumName = withServerActionAsyncCatcher<
   if (!validatedData.success) {
     throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
   }
-  const decryptedId = decrypt(validatedData.data.encryptedToken);
+  const decryptedId = getDecryptedId(validatedData.data.encryptedToken);
 
   const data = await prisma.album.update({
     where: {
@@ -70,7 +70,7 @@ export const checkIfAlbumExists = withServerActionAsyncCatcher<
   if (!validatedData.success) {
     throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
   }
-  const decryptedData = decrypt(validatedData.data);
+  const decryptedData = getDecryptedId(validatedData.data);
 
   const data = await prisma.album.findFirst({
     where: {
