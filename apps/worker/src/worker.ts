@@ -42,7 +42,7 @@ async function pullAndLogJobs() {
 
         const getImageFromBucket = new GetObjectCommand({
           Bucket: "test",
-          Key: mediaData?.r2Key,
+          Key: mediaData?.storageBucketKey,
         });
 
         const { Body } = await s3.send(getImageFromBucket);
@@ -57,7 +57,7 @@ async function pullAndLogJobs() {
 
         const thumbnailCommand = new PutObjectCommand({
           Bucket: "test",
-          Key: `${mediaData?.album.slug}/thumbnail-${mediaData?.filename}`,
+          Key: `${mediaData?.album.encryptedToken}/thumbnail-${mediaData?.filename}`,
           ContentType: mediaData?.mimeType,
           Body: thumbnail,
         });
@@ -74,7 +74,7 @@ async function pullAndLogJobs() {
                   fileSize: BigInt(thumbnail.length),
                   mimeType: "image/webp",
                   format: "webp",
-                  r2Key: `${mediaData?.album.slug}/thumbnail-${mediaData?.filename}`,
+                  storageBucketKey: `${mediaData?.album.encryptedToken}/thumbnail-${mediaData?.filename}`,
                   type: "THUMBNAIL",
                 },
               ],

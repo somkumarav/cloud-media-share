@@ -2,7 +2,11 @@ import { CopyURLButton } from "./copy-url-button";
 import { FileInput } from "./file-input";
 import { EmptyGalleryBackground } from "./icons/empty-gallery-background";
 
-export const EmptyGallery = ({ directory }: { directory: string }) => {
+export const EmptyGallery = ({
+  encryptedToken,
+}: {
+  encryptedToken: string;
+}) => {
   return (
     <div className='relative flex flex-col items-center justify-center mt-10'>
       <EmptyGalleryBackground />
@@ -10,7 +14,7 @@ export const EmptyGallery = ({ directory }: { directory: string }) => {
         <p>Add images to cloud to see them here</p>
         <div className='flex items-center space-x-2'>
           <CopyURLButton />
-          <FileInput directory={directory} />
+          <FileInput encryptedToken={encryptedToken} />
         </div>
       </div>
     </div>

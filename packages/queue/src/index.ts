@@ -19,7 +19,7 @@ redis.on("error", (err) => {
 
 export interface JobData {
   mediaId: string;
-  r2Key: string;
+  storageBucketKey: string;
   action: string;
   userId?: string;
   metadata?: any;

@@ -4,8 +4,8 @@ import { checkIfAlbumExists } from "@/actions/album.actions";
 import { AlbumTopBar } from "@/components/album-topbar";
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const { id: slug } = await params;
-  const isValidAlbum = await checkIfAlbumExists(slug);
+  const { id: encryptedToken } = await params;
+  const isValidAlbum = await checkIfAlbumExists(encryptedToken);
 
   if (!isValidAlbum.status) {
     return <InvalidAlbum />;
@@ -15,11 +15,11 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     <div>
       <div className='flex w-full flex-col mb-5'>
         <AlbumTopBar
-          directory={slug}
+          encryptedToken={encryptedToken}
           albumName={isValidAlbum.data?.title}
           albumSize={isValidAlbum.data?.albumSize}
         />
-        <ImageGallery directory={slug} />
+        <ImageGallery encryptedToken={encryptedToken} />
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ import { Check, ChevronLeft, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export const AlbumNameInput = (props: {
-  albumId: string;
+  encryptedToken: string;
   albumName: string;
 }) => {
   const router = useRouter();
@@ -25,7 +25,7 @@ export const AlbumNameInput = (props: {
       className='w-full flex items-center space-x-2 my-5'
       onSubmit={form.handleSubmit(async (data) => {
         await changeAlbumName({
-          albumId: props.albumId,
+          encryptedToken: props.encryptedToken,
           name: data.name,
         });
       })}

@@ -13,7 +13,7 @@ interface UploadedImage {
   imageUrl: string;
   fileSize: number;
   fileType: string;
-  albumId: string;
+  encryptedToken: string;
   uploadedAt: Date;
 }
 
@@ -21,8 +21,8 @@ interface UploadContextType {
   uploadedImages: UploadedImage[];
   addUploadedImage: (image: UploadedImage) => void;
   removeUploadedImage: (id: string) => void;
-  clearUploadedImages: (albumId: string) => void;
-  getUploadedImagesForAlbum: (albumId: string) => UploadedImage[];
+  clearUploadedImages: (encryptedToken: string) => void;
+  getUploadedImagesForAlbum: (encryptedToken: string) => UploadedImage[];
 }
 
 const UploadContext = createContext<UploadContextType | undefined>(undefined);
@@ -77,12 +77,16 @@ export const UploadProvider: React.FC<UploadProviderProps> = ({ children }) => {
     setUploadedImages((prev) => prev.filter((img) => img.id !== id));
   };
 
-  const clearUploadedImages = (albumId: string) => {
-    setUploadedImages((prev) => prev.filter((img) => img.albumId !== albumId));
+  const clearUploadedImages = (encryptedToken: string) => {
+    setUploadedImages((prev) =>
+      prev.filter((img) => img.encryptedToken !== encryptedToken)
+    );
   };
 
-  const getUploadedImagesForAlbum = (albumId: string) => {
-    return uploadedImages.filter((img) => img.albumId === albumId);
+  const getUploadedImagesForAlbum = (encryptedToken: string) => {
+    return uploadedImages.filter(
+      (img) => img.encryptedToken === encryptedToken
+    );
   };
 
   const value: UploadContextType = {

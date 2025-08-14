@@ -26,10 +26,10 @@ export const getSignedURL = withServerActionAsyncCatcher<
   if (!validatedData.success) {
     throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
   }
-  const { fileName, directory, fileSize, mimeType, checksum } =
+  const { fileName, encryptedToken, fileSize, mimeType, checksum } =
     validatedData.data;
 
-  const decryptedAlbumId = Number(decrypt(directory));
+  const decryptedAlbumId = Number(decrypt(encryptedToken));
 
   const albumContent = await prisma.media.groupBy({
     by: ["albumId"],
@@ -52,7 +52,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
 
   const command = new PutObjectCommand({
     Bucket: "test",
-    Key: `${directory}/${fileName}`,
+    Key: `${encryptedToken}/${fileName}`,
     ContentType: mimeType,
     ContentLength: fileSize,
     ChecksumSHA256: checksum,
@@ -69,7 +69,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
       mimeType,
       fileSize: BigInt(fileSize),
       type: mimeType.startsWith("image/") ? "IMAGE" : "VIDEO",
-      r2Key: `${directory}/${fileName}`,
+      storageBucketKey: `${encryptedToken}/${fileName}`,
       albumId: decryptedAlbumId,
       variants: {
         create: [
@@ -78,7 +78,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
             fileSize: BigInt(fileSize),
             mimeType,
             format: mimeType.split("/")[1] ?? "",
-            r2Key: `${directory}/${fileName}`,
+            storageBucketKey: `${encryptedToken}/${fileName}`,
             type: "ORIGINAL",
           },
         ],
@@ -110,7 +110,7 @@ export const uploadCompleted = withServerActionAsyncCatcher<
 
   await addToQueue({
     mediaId: req.mediaId.toString(),
-    r2Key: mediaData.r2Key,
+    storageBucketKey: mediaData.storageBucketKey,
     action: "EXTRACT_METADATA_AND_PROCESS",
   });
 

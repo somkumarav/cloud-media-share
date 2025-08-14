@@ -7,18 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  ADMIN
-  USER
-}
-
-enum SubscriptionPlan {
-  FREE
-  BASIC
-  PRO
-  ENTERPRISE
-}
-
 enum MediaType {
   IMAGE
   VIDEO
@@ -57,12 +45,12 @@ enum AnalyticsEvent {
 }
 
 model Album {
-  id          Int     @id @default(autoincrement())
-  title       String  @default("Enter your album name here")
-  description String? @db.Text
-  slug        String? @unique
+  id             Int     @id @default(autoincrement())
+  title          String  @default("Enter your album name here")
+  description    String? @db.Text
+  encryptedToken String? @unique
 
-  isPublic Boolean @default(false)
+  isPublic Boolean @default(true)
 
   media      Media[] @relation("AlbumMedia")
   mediaCount Int     @default(0)
@@ -88,14 +76,14 @@ model Album {
 model Media {
   id Int @id @default(autoincrement())
 
-  originalName String // user's original filename
-  filename     String // stored filename
+  originalName String
+  filename     String
   mimeType     String
-  fileSize     BigInt // size in bytes
+  fileSize     BigInt
   type         MediaType
 
-  r2Key    String @unique
-  r2Bucket String @default("main")
+  storageBucketKey  String @unique
+  storageBucketName String @default("main")
 
   originalUrl String?
 
@@ -140,10 +128,10 @@ model MediaVariant {
   format  String // webp, jpg, mp4, etc.
   quality String? // 480p, 720p, 1080p for videos
 
-  filename String
-  r2Key    String @unique
-  fileSize BigInt
-  mimeType String
+  filename         String
+  storageBucketKey String @unique
+  fileSize         BigInt
+  mimeType         String
 
   width  Int?
   height Int?

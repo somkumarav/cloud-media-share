@@ -5,8 +5,8 @@ import prisma from "@repo/db/client";
 import { s3 } from "@/lib/s3";
 import { decrypt } from "@/lib/encryption";
 
-export async function listImagesInDirectory(directory: string) {
-  const decryptedAlbumId = Number(decrypt(directory));
+export async function listImagesInDirectory(encryptedToken: string) {
+  const decryptedAlbumId = Number(decrypt(encryptedToken));
   const albumContent = await prisma.media.findMany({
     where: {
       albumId: decryptedAlbumId,
@@ -18,8 +18,8 @@ export async function listImagesInDirectory(directory: string) {
 
     const imageURLs = await Promise.all(
       imageObjects.map(async (obj) => {
-        const imageName = `${directory}/${obj.filename}`;
-        const thumbnailImageName = `${directory}/thumbnail-${obj.filename}`;
+        const imageName = `${encryptedToken}/${obj.filename}`;
+        const thumbnailImageName = `${encryptedToken}/thumbnail-${obj.filename}`;
 
         const getObjectCommand = new GetObjectCommand({
           Bucket: "test",

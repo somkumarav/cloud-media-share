@@ -16,7 +16,11 @@ interface BucketImage {
   thumbnailURL: string;
 }
 
-export const ImageGallery = ({ directory }: { directory: string }) => {
+export const ImageGallery = ({
+  encryptedToken,
+}: {
+  encryptedToken: string;
+}) => {
   const { getUploadedImagesForAlbum } = useUploadContext();
   const [bucketImages, setBucketImages] = useState<BucketImage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +28,7 @@ export const ImageGallery = ({ directory }: { directory: string }) => {
   useEffect(() => {
     const loadBucketImages = async () => {
       try {
-        const images = await listImagesInDirectory(directory);
+        const images = await listImagesInDirectory(encryptedToken); //
         // Map the bucket images to match our expected structure
         const mappedImages = images.map((image) => ({
           id: image.id,
@@ -45,16 +49,15 @@ export const ImageGallery = ({ directory }: { directory: string }) => {
     };
 
     loadBucketImages();
-  }, [directory]);
+  }, [encryptedToken]);
 
-  const localImages = getUploadedImagesForAlbum(directory);
+  const localImages = getUploadedImagesForAlbum(encryptedToken); //
 
   // Combine local and bucket images, with local images taking precedence
   const allImages = [
     ...bucketImages,
     ...localImages.map((localImage) => ({
       id: parseInt(localImage.id.split("-").pop() || "0"),
-      albumId: parseInt(directory),
       createdAt: localImage.uploadedAt,
       fileName: localImage.fileName,
       fileSize: BigInt(localImage.fileSize),
@@ -65,7 +68,8 @@ export const ImageGallery = ({ directory }: { directory: string }) => {
   ];
 
   if (isLoading) return <div className='text-center'>Loading...</div>;
-  if (!allImages.length) return <EmptyGallery directory={directory} />;
+  if (!allImages.length)
+    return <EmptyGallery encryptedToken={encryptedToken} />;
 
   return (
     <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
@@ -73,7 +77,6 @@ export const ImageGallery = ({ directory }: { directory: string }) => {
         <IndividualImage
           key={image.id}
           {...{
-            albumId: image.albumId,
             createdAt: image.createdAt,
             fileName: image.fileName,
             fileSize: image.fileSize,

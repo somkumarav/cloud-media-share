@@ -5,21 +5,21 @@ import { AlbumSizeIndicator } from "@/components/album-size-indicator";
 
 export const AlbumTopBar = ({
   albumName,
-  directory,
+  encryptedToken,
   albumSize,
 }: {
   albumName?: string;
-  directory: string;
+  encryptedToken: string;
   albumSize?: bigint;
 }) => {
   return (
     <div className='mb-10'>
       <AlbumNameInput
-        albumId={directory}
+        encryptedToken={encryptedToken}
         albumName={albumName?.length ? albumName : "Name your album"}
       />
       <div className='flex items-center px-4 space-x-2'>
-        <FileInput directory={directory} />
+        <FileInput encryptedToken={encryptedToken} />
         <CopyURLButton />
         <AlbumSizeIndicator albumSize={albumSize} />
       </div>

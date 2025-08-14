@@ -11,7 +11,6 @@ type TProps = {
   fileName: string;
   fileType: string;
   createdAt: Date;
-  albumId: number | null;
 };
 const IndividualImage = (image: TProps) => {
   const fileSize = formatFileSize(image.fileSize);

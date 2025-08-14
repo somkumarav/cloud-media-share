@@ -5,7 +5,7 @@ export type TAlbumNameSchema = z.infer<typeof AlbumNameSchema>;
 
 export const ChangeAlbumNameSchema = AlbumNameSchema.merge(
   z.object({
-    albumId: z.string(),
+    encryptedToken: z.string(),
   })
 );
 export type TChangeAlbumNameSchema = z.infer<typeof ChangeAlbumNameSchema>;

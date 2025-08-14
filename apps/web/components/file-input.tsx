@@ -21,7 +21,7 @@ const computeSHA256 = async (file: File) => {
   return hashHex;
 };
 
-export const FileInput = (props: { directory: string }) => {
+export const FileInput = (props: { encryptedToken: string }) => {
   const router = useRouter();
   const { addUploadedImage } = useUploadContext();
   const [files, setFiles] = useState<
@@ -44,7 +44,7 @@ export const FileInput = (props: { directory: string }) => {
     const checksum = await computeSHA256(file);
     const getSignedURLAction = await getSignedURL({
       fileName: file.name,
-      directory: props.directory,
+      encryptedToken: props.encryptedToken,
       fileSize: file.size,
       mimeType: file.type,
       checksum: checksum,
@@ -85,7 +85,7 @@ export const FileInput = (props: { directory: string }) => {
     uploadCompleted({ mediaId: getSignedURLAction.data.mediaId });
 
     // Store the uploaded image in context for immediate gallery display
-    const imageId = `${props.directory}-${file.name}-${Date.now()}`;
+    const imageId = `${props.encryptedToken}-${file.name}-${Date.now()}`;
     const imageUrl = URL.createObjectURL(file);
 
     addUploadedImage({
@@ -94,7 +94,7 @@ export const FileInput = (props: { directory: string }) => {
       imageUrl,
       fileSize: file.size,
       fileType: file.type,
-      albumId: props.directory,
+      encryptedToken: props.encryptedToken, //
       uploadedAt: new Date(),
     });
 

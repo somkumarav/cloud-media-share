@@ -23,16 +23,16 @@ export const createAlbum = async () => {
     redirect("/service-unavailable");
   }
 
-  const slug = encrypt(`${Number(allAlbums.pop()?.id ?? 0) + 1}`);
+  const encryptedToken = encrypt(`${Number(allAlbums.pop()?.id ?? 0) + 1}`);
 
   const data = await prisma.album.create({
     data: {
-      slug,
+      encryptedToken,
     },
   });
 
   if (data.id) {
-    redirect(`/album/${slug}`);
+    redirect(`/album/${encryptedToken}`);
   } else {
     throw new Error("Failed to create album");
   }
@@ -46,7 +46,7 @@ export const changeAlbumName = withServerActionAsyncCatcher<
   if (!validatedData.success) {
     throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
   }
-  const decryptedId = decrypt(validatedData.data.albumId);
+  const decryptedId = decrypt(validatedData.data.encryptedToken);
 
   const data = await prisma.album.update({
     where: {

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const GetSignedURLSchema = z.object({
-  directory: z.string(),
+  encryptedToken: z.string(),
   fileName: z.string(),
   mimeType: z.string(),
   fileSize: z.number(),
