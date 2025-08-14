@@ -23,7 +23,7 @@ export const createAlbum = async () => {
     redirect("/service-unavailable");
   }
 
-  const slug = encrypt(`${Number(allAlbums.pop()?.id) + 1}`);
+  const slug = encrypt(`${Number(allAlbums.pop()?.id ?? 0) + 1}`);
 
   const data = await prisma.album.create({
     data: {
