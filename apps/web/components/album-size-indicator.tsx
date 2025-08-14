@@ -1,5 +1,5 @@
 import { cn, formatFileSize } from "@/lib/utils";
-import { GIGABYTE } from "@/lib/constants";
+import { GIGABYTE } from "@repo/utils/index";
 
 export const AlbumSizeIndicator = ({ albumSize }: { albumSize?: bigint }) => {
   const totalSize = GIGABYTE;

@@ -10,7 +10,7 @@ import { ErrorHandler } from "@/lib/error";
 import { Album } from "@repo/db/client";
 import { ChangeAlbumNameSchema, TChangeAlbumNameSchema } from "@/types/album";
 import { revalidatePath } from "next/cache";
-import { GIGABYTE } from "@/lib/constants";
+import { GIGABYTE } from "@repo/utils/index";
 
 export const createAlbum = async () => {
   const allAlbums = await prisma.album.findMany();

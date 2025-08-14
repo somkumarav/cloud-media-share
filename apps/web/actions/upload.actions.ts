@@ -15,7 +15,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import prisma from "@repo/db/client";
 import { decrypt } from "@/lib/encryption";
 import { addToQueue } from "@repo/queue/index";
-import { GIGABYTE } from "@/lib/constants";
+import { GIGABYTE } from "@repo/utils/index";
 
 export const getSignedURL = withServerActionAsyncCatcher<
   TGetSignedURL,

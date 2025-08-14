@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { GIGABYTE, KILOBYTE, MEGABYTE } from "@/lib/constants";
+import { GIGABYTE, KILOBYTE, MEGABYTE } from "@repo/utils/index";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
