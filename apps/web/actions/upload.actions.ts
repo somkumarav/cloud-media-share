@@ -29,7 +29,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
   const { fileName, encryptedToken, fileSize, mimeType, checksum } =
     validatedData.data;
 
-  const decryptedAlbumId = Number(getDecryptedId(encryptedToken));
+  const decryptedAlbumId = getDecryptedId(encryptedToken);
 
   const albumContent = await prisma.media.groupBy({
     by: ["albumId"],

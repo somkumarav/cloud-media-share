@@ -37,9 +37,9 @@ export const generateEncryptedId = (id: string | number): string => {
   }
 };
 
-export const getDecryptedId = (encryptedId: string): string => {
+export const getDecryptedId = (encryptedId: string): number => {
   try {
-    return decrypt(encryptedId);
+    return Number(decrypt(encryptedId));
   } catch (error) {
     console.error("Decryption failed:", error);
     throw new Error("Invalid encrypted ID");
