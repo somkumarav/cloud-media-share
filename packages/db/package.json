@@ -5,7 +5,6 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dg:generate": "pnpm prisma generate",
     "db:push": "pnpm prisma db push",
     "db:studio": "pnpm prisma studio"
@@ -13,7 +12,7 @@
   "keywords": [],
   "author": "",
   "exports": {
-    "./client":"./src/index.ts"
+    ".":"./src/index.ts"
   },
   "dependencies": {
     "@repo/eslint-config": "workspace:*",

@@ -4,12 +4,8 @@
   "description": "",
   "type": "module",
   "main": "index.js",
-  "scripts": {
-    "build": "tsc",
-    "start": "node dist/worker.js"
-  },
   "exports": {
-    "./*":"./src/*.ts"
+    ".": "./src/index.ts"
   },
   "dependencies": {
     "@repo/eslint-config": "workspace:*",

@@ -1,10 +1,9 @@
 import "dotenv/config";
-import prisma from "@repo/db/client";
+import prisma, { VariantType } from "@repo/db";
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import sharp from "sharp";
-
 import { S3Client } from "@aws-sdk/client-s3";
-import { redis } from "@repo/queue/index";
+import { redis } from "@repo/queue";
 
 export const s3 = new S3Client({
   region: "auto",

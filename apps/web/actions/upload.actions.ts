@@ -12,10 +12,9 @@ import { s3 } from "@/lib/s3";
 import { GetSignedURLSchema } from "@/types/upload";
 import { ErrorHandler } from "@/lib/error";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import prisma from "@repo/db/client";
-import { getDecryptedId } from "@repo/utils/index";
-import { addToQueue } from "@repo/queue/index";
-import { GIGABYTE } from "@repo/utils/index";
+import prisma from "@repo/db";
+import { getDecryptedId, GIGABYTE } from "@repo/utils";
+import { addToQueue } from "@repo/queue";
 
 export const getSignedURL = withServerActionAsyncCatcher<
   TGetSignedURL,

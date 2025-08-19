@@ -1,16 +1,14 @@
 "use server";
 import { redirect } from "next/navigation";
-import prisma from "@repo/db/client";
-import { getDecryptedId, generateEncryptedId } from "@repo/utils/index";
+import prisma, { Album } from "@repo/db";
+import { getDecryptedId, generateEncryptedId, GIGABYTE } from "@repo/utils";
 import { withServerActionAsyncCatcher } from "@/lib/async-catch";
 import { ServerActionReturnType } from "@/types/api.types";
 import { z } from "zod";
 import { SuccessResponse } from "@/lib/success";
 import { ErrorHandler } from "@/lib/error";
-import { Album } from "@repo/db/client";
 import { ChangeAlbumNameSchema, TChangeAlbumNameSchema } from "@/types/album";
 import { revalidatePath } from "next/cache";
-import { GIGABYTE } from "@repo/utils/index";
 
 export const createAlbum = async () => {
   const allAlbums = await prisma.album.findMany();
