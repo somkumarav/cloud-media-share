@@ -18,16 +18,16 @@ export async function listImagesInDirectory(encryptedToken: string) {
 
     const imageURLs = await Promise.all(
       imageObjects.map(async (obj) => {
-        const imageName = `${encryptedToken}/${obj.filename}`;
-        const thumbnailImageName = `${encryptedToken}/thumbnail-${obj.filename}`;
+        const imageBucketKey = `${encryptedToken}/${obj.filename}`;
+        const thumbnailBucketKey = `${encryptedToken}/thumbnail-${obj.filename}`;
 
         const getObjectCommand = new GetObjectCommand({
           Bucket: "test",
-          Key: imageName,
+          Key: imageBucketKey,
         });
         const getThumbnailObjectCommand = new GetObjectCommand({
           Bucket: "test",
-          Key: thumbnailImageName,
+          Key: thumbnailBucketKey,
         });
 
         const imageURL = await getSignedUrl(s3, getObjectCommand, {
