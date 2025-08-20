@@ -46,22 +46,35 @@ async function pullAndLogJobs() {
 
         const { Body } = await s3.send(getImageFromBucket);
         const imageBuffer = await streamToBuffer(Body);
-        console.log({ Body, imageBuffer });
 
         const image = await sharp(imageBuffer);
         const metadata = await image.metadata();
         const stats = await image.stats();
 
-        const thumbnail = await image.webp({ quality: 70 }).toBuffer();
+        const thumbnailImage = await image
+          .resize({ height: 550, width: 550 })
+          .webp()
+          .toBuffer();
+        const smallImage = await image
+          .resize({ height: 600, width: 600 })
+          .webp()
+          .toBuffer();
 
-        const thumbnailCommand = new PutObjectCommand({
+        const thumbnailImageCommand = new PutObjectCommand({
           Bucket: "test",
           Key: `${mediaData?.album.encryptedToken}/thumbnail-${mediaData?.filename}`,
           ContentType: mediaData?.mimeType,
-          Body: thumbnail,
+          Body: thumbnailImage,
+        });
+        const smallImageCommand = new PutObjectCommand({
+          Bucket: "test",
+          Key: `${mediaData?.album.encryptedToken}/small-${mediaData?.filename}`,
+          ContentType: mediaData?.mimeType,
+          Body: smallImage,
         });
 
-        await s3.send(thumbnailCommand);
+        await s3.send(thumbnailImageCommand);
+        await s3.send(smallImageCommand);
 
         await prisma.media.update({
           where: { id: mediaData!.id },
@@ -70,11 +83,19 @@ async function pullAndLogJobs() {
               create: [
                 {
                   filename: `thumbnail-${mediaData?.filename}`,
-                  fileSize: BigInt(thumbnail.length),
+                  fileSize: BigInt(thumbnailImage.length),
                   mimeType: "image/webp",
                   format: "webp",
                   storageBucketKey: `${mediaData?.album.encryptedToken}/thumbnail-${mediaData?.filename}`,
-                  type: "THUMBNAIL",
+                  type: VariantType.THUMBNAIL,
+                },
+                {
+                  filename: `small-${mediaData?.filename}`,
+                  fileSize: BigInt(smallImage.length),
+                  mimeType: "image/webp",
+                  format: "webp",
+                  storageBucketKey: `${mediaData?.album.encryptedToken}/small-${mediaData?.filename}`,
+                  type: VariantType.SMALL,
                 },
               ],
             },
