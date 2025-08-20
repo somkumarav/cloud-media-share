@@ -1,9 +1,12 @@
 import crypto from "crypto";
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY!;
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 const IV_LENGTH = 16;
 
 export function encrypt(text: string): string {
+  if (!ENCRYPTION_KEY) {
+    throw new Error("Encryption key not found");
+  }
   const iv = crypto.randomBytes(IV_LENGTH);
   const cipher = crypto.createCipheriv(
     "aes-256-cbc",
@@ -16,6 +19,9 @@ export function encrypt(text: string): string {
 }
 
 export function decrypt(text: string): string {
+  if (!ENCRYPTION_KEY) {
+    throw new Error("Encryption key not found");
+  }
   const iv = Buffer.from(text.slice(0, 32), "hex");
   const encryptedText = Buffer.from(text.slice(32), "hex");
   const decipher = crypto.createDecipheriv(
