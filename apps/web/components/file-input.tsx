@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { HardDriveUpload, Upload } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 import { cn } from "@/lib/utils";
@@ -200,7 +200,7 @@ export const FileInput = (props: { encryptedToken: string }) => {
         Upload photos
       </Button>
       <DialogContent className='max-w-[1000px] flex flex-col items-center'>
-        <DialogHeader className='text-2xl'>Upload to cloud ☁️</DialogHeader>
+        <DialogTitle className='text-2xl pt-2'>Upload to cloud ☁️</DialogTitle>
         <form
           onSubmit={(e) => e.preventDefault()}
           className='flex flex-col h-full items-center w-full lg:w-2/3 justify-start border-2 border-dashed rounded-lg'
