@@ -126,7 +126,7 @@ export const FileInput = (props: { encryptedToken: string }) => {
       file: File;
       isUploaded: boolean;
     }[],
-    concurrencyLimit = 3
+    concurrencyLimit = 6
   ) => {
     setIsUploading(true);
 
