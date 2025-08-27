@@ -12,7 +12,9 @@
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
     "node": "^18.20.0",
-    "typescript": "5.8.2"
+    "typescript": "5.8.2",
+    "ioredis": "^5.3.2",
+    "dotenv": "^17.2.1"
   },
   "keywords": [],
   "author": "",
