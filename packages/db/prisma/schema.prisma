@@ -13,7 +13,6 @@ enum MediaType {
 }
 
 enum ProcessingStatus {
-  UPLOADING
   PENDING
   PROCESSING
   COMPLETED
@@ -67,8 +66,6 @@ model Album {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Media     Media?   @relation(fields: [mediaId], references: [id])
-  mediaId   Int?
 
   @@map("albums")
 }
@@ -87,7 +84,7 @@ model Media {
 
   originalUrl String?
 
-  status ProcessingStatus @default(UPLOADING)
+  status ProcessingStatus @default(PENDING)
 
   variants MediaVariant[]
 
@@ -114,7 +111,6 @@ model Media {
   processedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  Album       Album[]
 
   @@map("media")
 }
@@ -148,8 +144,8 @@ model Download {
   id Int @id @default(autoincrement())
 
   mediaId Int?
-  media   Media?  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
-  albumId String? // for bulk downloads
+  media   Media? @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  albumId Int? // for bulk downloads
 
   // Who downloaded
   // userId      String?
@@ -170,7 +166,7 @@ model Analytics {
 
   event      AnalyticsEvent
   entityType String // "album", "media"
-  entityId   String
+  entityId   Int
 
   userId    String?
   ipAddress String?
