@@ -9,8 +9,6 @@ type TProps = {
   fileSize: bigint;
   id: number;
   fileName: string;
-  fileType: string;
-  createdAt: Date;
   isLocal: boolean;
 };
 const IndividualImage = (image: TProps) => {

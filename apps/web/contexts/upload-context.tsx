@@ -1,21 +1,26 @@
 "use client";
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { listImagesInDirectory } from "../actions/r2.actions";
 
-interface UploadedImage {
+type Media = {
   id: number;
   fileName: string;
-  imageUrl: string;
-  fileSize: number;
+  imageURL: string;
+  fileSize: bigint;
   fileType: string;
   encryptedToken: string;
+  thumbnailURL?: string;
+  createdAt: Date;
   uploadedAt: Date;
-}
+  isLocal: boolean;
+};
 
 interface UploadContextType {
-  uploadedImages: UploadedImage[];
-  addUploadedImage: (image: UploadedImage) => void;
-  clearUploadedImages: (encryptedToken: string) => void;
-  getUploadedImagesForAlbum: (encryptedToken: string) => UploadedImage[];
+  media: Media[];
+  isLoading?: boolean;
+  isError?: boolean;
+  error?: string | null;
+  addUploadedImage: (image: Media) => void;
 }
 
 const UploadContext = createContext<UploadContextType | undefined>(undefined);
@@ -28,33 +33,58 @@ export const useUploadContext = () => {
   return context;
 };
 
-interface UploadProviderProps {
-  children: ReactNode;
-}
+export const UploadProvider = ({
+  children,
+  encryptedToken,
+}: {
+  encryptedToken: string;
+  children: React.ReactNode;
+}) => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [media, setMedia] = useState<Media[]>([]);
+  useEffect(() => {
+    const loadBucketImages = async () => {
+      try {
+        const images = await listImagesInDirectory(encryptedToken); //
+        const mappedImages = images.map(
+          (image) =>
+            ({
+              id: image.id,
+              fileName: image.filename,
+              imageURL: image.imageURL,
+              fileSize: image.fileSize,
+              fileType: image.type,
+              encryptedToken: encryptedToken,
+              createdAt: image.createdAt,
+              uploadedAt: image.uploadedAt,
+              thumbnailURL: image.thumbnailURL || image.imageURL,
+              isLocal: false,
+            }) satisfies Media
+        );
+        setMedia((prev) => [...prev, ...mappedImages]);
+      } catch (error) {
+        console.error(error);
+        setIsError(true);
+        setError((error as Error).message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadBucketImages();
+  }, [encryptedToken]);
 
-export const UploadProvider: React.FC<UploadProviderProps> = ({ children }) => {
-  const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
-  const addUploadedImage = (image: UploadedImage) => {
-    setUploadedImages((prev) => [...prev, image]);
-  };
-
-  const clearUploadedImages = (encryptedToken: string) => {
-    setUploadedImages((prev) =>
-      prev.filter((img) => img.encryptedToken !== encryptedToken)
-    );
-  };
-
-  const getUploadedImagesForAlbum = (encryptedToken: string) => {
-    return uploadedImages.filter(
-      (img) => img.encryptedToken === encryptedToken
-    );
+  const addUploadedImage = (image: Media) => {
+    setMedia((prev) => [...prev]);
   };
 
   const value: UploadContextType = {
-    uploadedImages,
+    media,
+    isLoading,
+    isError,
+    error,
     addUploadedImage,
-    clearUploadedImages,
-    getUploadedImagesForAlbum,
   };
 
   return (
