@@ -104,7 +104,7 @@ export const uploadCompleted = withServerActionAsyncCatcher<
 
   const mediaData = await prisma.media.update({
     where: { id: req.mediaId },
-    data: { status: "PENDING" },
+    data: { status: "PROCESSING" },
   });
 
   await addToQueue({
