@@ -47,6 +47,7 @@ const prismaClientSingleton = () => {
               },
             });
           }
+          return result;
         },
       },
     },
