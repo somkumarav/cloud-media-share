@@ -7,7 +7,10 @@ import { ServerActionReturnType } from "@/types/api.types";
 import { z } from "zod";
 import { SuccessResponse } from "@/lib/success";
 import { ErrorHandler } from "@/lib/error";
-import { ChangeAlbumNameSchema, TChangeAlbumNameSchema } from "@/types/album";
+import {
+  ChangeAlbumNameSchema,
+  TChangeAlbumNameSchema,
+} from "@/types/album.types";
 import { revalidatePath } from "next/cache";
 
 export const createAlbum = async () => {
