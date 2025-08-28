@@ -2,12 +2,14 @@ import Image from "next/image";
 import { cva, VariantProps } from "class-variance-authority";
 import { cn, formatFileSize } from "@/lib/utils";
 import { DownloadImageButton } from "@/components/download-image-button";
+import { DeleteImageButton } from "@/components/delete-image-button";
 
 type TProps = {
+  id: number;
+  mediaId: number;
   imageURL: string;
   thumbnailURL: string;
   fileSize: bigint;
-  id: number;
   fileName: string;
   isLocal: boolean;
 };
@@ -16,12 +18,13 @@ const IndividualImage = (image: TProps) => {
   return (
     <div key={image.id} className='rounded-md border border-white/10'>
       <div className='relative aspect-square group'>
-        <div className='absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-200 flex items-center justify-center'>
+        <div className='absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-200 flex items-center justify-center space-x-2'>
           <DownloadImageButton
             imageId={image.id}
             isLocal={image.isLocal}
             imageURL={image.imageURL}
           />
+          <DeleteImageButton mediaId={image.mediaId} />
         </div>
         <Image
           loading='lazy'

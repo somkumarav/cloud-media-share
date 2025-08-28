@@ -1,10 +1,16 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { listImagesInDirectory } from "@/actions/r2.actions";
-import { getSignedURL, uploadCompleted } from "@/actions/upload.actions";
+import {
+  deleteMedia,
+  getSignedURL,
+  uploadCompleted,
+} from "@/actions/upload.actions";
+import { ServerActionReturnType } from "@/types/api.types";
 
 type Media = {
   id: number;
+  mediaId: number;
   fileName: string;
   imageURL: string;
   fileSize: bigint;
@@ -25,6 +31,7 @@ interface UploadContextType {
     status: boolean;
     message: string;
   }>;
+  deleteFile: (mediaId: number) => Promise<ServerActionReturnType>;
 }
 
 const UploadContext = createContext<UploadContextType | undefined>(undefined);
@@ -56,6 +63,7 @@ export const UploadProvider = ({
           (image) =>
             ({
               id: image.id,
+              mediaId: image.id,
               fileName: image.filename,
               imageURL: image.imageURL,
               fileSize: image.fileSize,
@@ -116,6 +124,7 @@ export const UploadProvider = ({
     setMedia((prev) => [
       {
         id: uploadCompleteResponse.data?.imageId ?? 0,
+        mediaId: getSignedURLAction.data?.mediaId ?? 0,
         fileName: file.name,
         imageURL: imageUrl,
         fileSize: BigInt(file.size),
@@ -131,12 +140,25 @@ export const UploadProvider = ({
     return { status: true, message: "Upload successful" };
   };
 
+  const deleteFile = async (mediaId: number) => {
+    const file = media.find((file) => file.mediaId === mediaId);
+    if (!file) throw new Error("File not found");
+
+    const res = await deleteMedia({ mediaId });
+    if (res.status) {
+      setMedia((prev) => prev.filter((item) => item.mediaId !== mediaId));
+    }
+
+    return res;
+  };
+
   const value: UploadContextType = {
     media,
     isLoading,
     isError,
     error,
     uploadFile,
+    deleteFile,
   };
 
   return (
