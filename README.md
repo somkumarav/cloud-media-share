@@ -11,11 +11,11 @@ A web app where you can create a collaborative album of photos and videos of you
 ```bash
 git clone https://github.com/somkumarav/cloud-media-share.git
 
-cd cloud-media-share.git
+cd cloud-media-share
 
-yarn
+pnpm install
 
-yarn dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

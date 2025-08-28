@@ -7,9 +7,9 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "db:push": "cd packages/db && pnpm db:push && cd ../..",
-    "db:generate": "cd packages/db && pnpm db:generate && cd ../..",
-    "db:studio": "cd packages/db && pnpm db:studio && cd ../.."
+    "db:push": "pnpm --filter @repo/db db:push",
+    "db:generate": "pnpm --filter @repo/db db:generate",
+    "db:studio": "pnpm --filter @repo/db db:studio"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
