@@ -142,8 +142,6 @@ export const deleteMedia = withServerActionAsyncCatcher<
   }
   const req = validatedData.data;
 
-  throw new ErrorHandler("Not implemented", "BAD_REQUEST");
-
   const mediaData = await prisma.media.delete({
     where: { id: req.mediaId },
     include: { variants: true },
