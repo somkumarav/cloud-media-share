@@ -7,13 +7,15 @@ export type ImageResponseData = {
 
 import { CircleAlert, CircleCheckBig, Loader2 } from "lucide-react";
 import Image from "next/image";
+import { formatFileSize } from "../lib/utils";
 
 const ImageUpload = (props: {
   name: string;
-  size: number;
+  size: bigint;
   isUploaded: boolean;
   imageURL: string;
   isError: boolean;
+  error: string | undefined;
 }) => {
   return (
     <tr>
@@ -34,13 +36,15 @@ const ImageUpload = (props: {
         </div>
       </td>
       <td className={"px-6 py-4 whitespace-nowrap text-sm"}>
-        {(props.size / 1000000).toFixed(2)} MB
+        {formatFileSize(props.size).formatted}
       </td>
       <td className='px-6 py-4 whitespace-nowrap text-sm'>
         {props.isError ? (
           <div className='flex flex-col items-center text-destructive'>
             <CircleAlert />
-            <p className='text-xs font-medium'>1GB Cap exceeded</p>
+            <p className='text-xs font-medium'>
+              {props.error ?? "Something went wrong"}
+            </p>
           </div>
         ) : props.isUploaded ? (
           <CircleCheckBig />

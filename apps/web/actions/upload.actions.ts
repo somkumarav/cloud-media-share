@@ -49,6 +49,18 @@ export const getSignedURL = withServerActionAsyncCatcher<
     );
   }
 
+  const fileAlreadyExist = await prisma.media.findFirst({
+    where: {
+      albumId: decryptedAlbumId,
+      originalName: fileName,
+      fileSize: BigInt(fileSize),
+    },
+  });
+
+  if (fileAlreadyExist) {
+    throw new ErrorHandler("File already exists", "BAD_REQUEST");
+  }
+
   const command = new PutObjectCommand({
     Bucket: "test",
     Key: `${encryptedToken}/${fileName}`,
