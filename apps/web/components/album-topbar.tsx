@@ -20,7 +20,7 @@ export const AlbumTopBar = ({
         albumName={albumName?.length ? albumName : "Name your album"}
       />
       <div className='flex items-center px-4 space-x-2'>
-        <FileInput encryptedToken={encryptedToken} />
+        <FileInput />
         <CopyURLButton />
         <DownloadAsZipButton encryptedToken={encryptedToken} />
         <AlbumSizeIndicator albumSize={albumSize} />

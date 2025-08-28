@@ -21,7 +21,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
             albumName={isValidAlbum.data?.title}
             albumSize={isValidAlbum.data?.albumSize}
           />
-          <ImageGallery encryptedToken={encryptedToken} />
+          <ImageGallery />
         </div>
       </UploadProvider>
     </div>
