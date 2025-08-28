@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { AlbumNameSchema, TAlbumNameSchema } from "@/types/album";
+import { AlbumNameSchema, TAlbumNameSchema } from "@/types/album.types";
 import { Button } from "@/components/ui/button";
 import { changeAlbumName } from "@/actions/album.actions";
 import { cn } from "@/lib/utils";
