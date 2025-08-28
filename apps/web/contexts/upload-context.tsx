@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { listImagesInDirectory } from "../actions/r2.actions";
+import { listImagesInDirectory } from "@/actions/r2.actions";
+import { getSignedURL, uploadCompleted } from "@/actions/upload.actions";
 
 type Media = {
   id: number;
@@ -20,7 +21,10 @@ interface UploadContextType {
   isLoading?: boolean;
   isError?: boolean;
   error?: string | null;
-  addUploadedImage: (image: Media) => void;
+  uploadFile: (file: File) => Promise<{
+    status: boolean;
+    message: string;
+  }>;
 }
 
 const UploadContext = createContext<UploadContextType | undefined>(undefined);
@@ -75,8 +79,56 @@ export const UploadProvider = ({
     loadBucketImages();
   }, [encryptedToken]);
 
-  const addUploadedImage = (image: Media) => {
-    setMedia((prev) => [...prev]);
+  const uploadFile = async (file: File) => {
+    const checksum = await computeSHA256(file);
+    const getSignedURLAction = await getSignedURL({
+      fileName: file.name,
+      encryptedToken,
+      fileSize: file.size,
+      mimeType: file.type,
+      checksum: checksum,
+    });
+
+    if (!getSignedURLAction.status) {
+      throw new Error(getSignedURLAction.message ?? "Failed to get signed URL");
+    }
+    if (!getSignedURLAction.data?.signedURL)
+      throw new Error(getSignedURLAction.message ?? "No signed URL returned");
+
+    const response = await fetch(getSignedURLAction.data?.signedURL, {
+      method: "PUT",
+      body: file,
+      headers: {
+        "Content-Type": file.type,
+      },
+    });
+
+    if (!response.ok) throw new Error("Upload failed");
+
+    const uploadCompleteResponse = await uploadCompleted({
+      mediaId: getSignedURLAction.data.mediaId,
+    });
+
+    if (!uploadCompleteResponse.status)
+      throw new Error("Upload completion failed");
+
+    const imageUrl = URL.createObjectURL(file);
+    setMedia((prev) => [
+      {
+        id: uploadCompleteResponse.data?.imageId ?? 0,
+        fileName: file.name,
+        imageURL: imageUrl,
+        fileSize: BigInt(file.size),
+        fileType: file.type,
+        encryptedToken: encryptedToken, //
+        uploadedAt: new Date(),
+        createdAt: new Date(),
+        isLocal: true,
+        thumbnailURL: imageUrl,
+      },
+      ...prev,
+    ]);
+    return { status: true, message: "Upload successful" };
   };
 
   const value: UploadContextType = {
@@ -84,10 +136,20 @@ export const UploadProvider = ({
     isLoading,
     isError,
     error,
-    addUploadedImage,
+    uploadFile,
   };
 
   return (
     <UploadContext.Provider value={value}>{children}</UploadContext.Provider>
   );
+};
+
+const computeSHA256 = async (file: File) => {
+  const buffer = await file.arrayBuffer();
+  const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return hashHex;
 };

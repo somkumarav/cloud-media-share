@@ -3,190 +3,114 @@ import { useEffect, useState } from "react";
 import { HardDriveUpload, Upload } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-
 import { cn } from "@/lib/utils";
 import ImageUpload from "@/components/image-upload";
-import { getSignedURL, uploadCompleted } from "@/actions/upload.actions";
-import { useRouter } from "next/navigation";
 import { acceptedFileType } from "@repo/utils";
 import { useUploadContext } from "@/contexts/upload-context";
 
-const computeSHA256 = async (file: File) => {
-  const buffer = await file.arrayBuffer();
-  const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-  return hashHex;
+type Files = {
+  isUploaded: boolean;
+  isError: boolean;
+  file: File;
+  error?: string;
 };
 
-export const FileInput = (props: { encryptedToken: string }) => {
-  const router = useRouter();
-  const { addUploadedImage } = useUploadContext();
-  const [files, setFiles] = useState<
-    { isUploaded: boolean; isError: boolean; file: File }[]
-  >([]);
+export const FileInput = () => {
+  const { uploadFile } = useUploadContext();
+  const [files, setFiles] = useState<Files[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [warning, setWarning] = useState<string | null>(null);
   const noInput = files.length <= 0;
 
   useEffect(() => {
-    if (warning) {
-      setTimeout(() => {
-        setWarning(null);
-      }, 2000);
-    }
+    if (!warning) return;
+    const timer = setTimeout(() => setWarning(null), 2000);
+    return () => clearTimeout(timer);
   }, [warning]);
 
-  const uploadFile = async (file: File) => {
-    const checksum = await computeSHA256(file);
-    const getSignedURLAction = await getSignedURL({
-      fileName: file.name,
-      encryptedToken: props.encryptedToken,
-      fileSize: file.size,
-      mimeType: file.type,
-      checksum: checksum,
-    });
+  const handleUpload = async (file: File) => {
+    try {
+      await uploadFile(file);
 
-    if (!getSignedURLAction.status) {
       setFiles((prev) =>
         prev.map((item) =>
           item.file === file
             ? {
                 file: item.file,
-                isUploaded: item.isUploaded,
-                isError: true,
-              }
-            : {
-                file: item.file,
-                isUploaded: item.isUploaded,
+                isUploaded: true,
                 isError: item.isError,
               }
+            : item
         )
       );
-      return;
+    } catch (error) {
+      if (error instanceof Error) {
+        setFiles((prev) =>
+          prev.map((item) =>
+            item.file === file
+              ? {
+                  file: item.file,
+                  isUploaded: item.isUploaded,
+                  isError: true,
+                  error: error.message,
+                }
+              : item
+          )
+        );
+      }
     }
-    if (!getSignedURLAction.data?.signedURL) return;
-
-    const response = await fetch(getSignedURLAction.data?.signedURL, {
-      method: "PUT",
-      body: file,
-      headers: {
-        "Content-Type": file.type,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Upload failed");
-    }
-
-    const uploadCompleteResponse = await uploadCompleted({
-      mediaId: getSignedURLAction.data.mediaId,
-    });
-    if (!uploadCompleteResponse.status) {
-      throw new Error("Upload completion failed");
-    }
-
-    // Store the uploaded image in context for immediate gallery display
-    const imageUrl = URL.createObjectURL(file);
-
-    addUploadedImage({
-      id: uploadCompleteResponse.data?.imageId ?? 0,
-      fileName: file.name,
-      imageUrl,
-      fileSize: file.size,
-      fileType: file.type,
-      encryptedToken: props.encryptedToken, //
-      uploadedAt: new Date(),
-    });
-
-    setFiles((prev) =>
-      prev.map((item) =>
-        item.file === file
-          ? {
-              file: item.file,
-              isUploaded: true,
-              isError: item.isError,
-            }
-          : {
-              file: item.file,
-              isUploaded: item.isUploaded,
-              isError: item.isError,
-            }
-      )
-    );
-
-    return response;
   };
 
-  const uploadParallelly = async (
-    uniqueFiles: {
-      file: File;
-      isUploaded: boolean;
-    }[],
-    concurrencyLimit = 6
-  ) => {
+  const uploadFiles = async (filesToUpload: Files[]) => {
+    if (filesToUpload.length === 0) return;
+
     setIsUploading(true);
 
-    const uploadQueue = uniqueFiles.filter((file) => !file.isUploaded);
-    const results = [];
+    await Promise.allSettled(
+      filesToUpload.map((fileState) => handleUpload(fileState.file))
+    );
 
-    while (uploadQueue.length > 0) {
-      const batch = uploadQueue.splice(0, concurrencyLimit);
-      const batchPromises = batch.map((file) =>
-        uploadFile(file.file)
-          .then(() => ({ success: true, file: file.file }))
-          .catch((error) => ({ success: false, file: file.file, error }))
-      );
-
-      const batchResults = await Promise.all(batchPromises);
-      results.push(...batchResults);
-    }
-
-    const failedUploads = results.filter((result) => !result.success);
-    if (failedUploads.length > 0) {
-      console.error("Some files failed to upload:", failedUploads);
-    }
-
-    router.refresh();
     setIsUploading(false);
   };
 
-  const handleFileChange = (fileList: FileList) => {
-    if (fileList) {
-      const newFiles = Array.from(fileList)
-        .filter((file) => {
-          if (!acceptedFileType.includes(file.type))
-            return setWarning("Invalid file type");
-          return file;
-        })
-        .map((file) => ({
-          file,
-          isUploaded: false,
-        }));
+  const handleFileChange = (fileList: FileList | null) => {
+    if (!fileList) return;
 
-      const uniqueFiles = newFiles.filter(
-        (newFile) =>
-          !files.some(
-            (existingFile) =>
-              existingFile.file.name === newFile.file.name &&
-              existingFile.file.size === newFile.file.size
-          )
-      );
+    const validFiles = validateFiles(fileList);
+    const uniqueFiles = getUniqueFiles(validFiles);
 
-      setFiles((prev) => [
-        ...prev,
-        ...uniqueFiles.map((item) => {
-          return { ...item, isuploaded: false, isError: false };
-        }),
-      ]);
+    if (uniqueFiles.length === 0) return;
 
-      setIsUploading(true);
-      // uploadSequentially(uniqueFiles);
-      uploadParallelly(uniqueFiles);
-    }
+    const newFileStates: Files[] = uniqueFiles.map((file) => ({
+      file,
+      isUploaded: false,
+      isError: false,
+    }));
+
+    setFiles((prev) => [...prev, ...newFileStates]);
+    uploadFiles(newFileStates);
+  };
+
+  const validateFiles = (fileList: FileList): File[] => {
+    return Array.from(fileList).filter((file) => {
+      if (!acceptedFileType.includes(file.type)) {
+        setWarning("Invalid file type");
+        return false;
+      }
+      return true;
+    });
+  };
+
+  const getUniqueFiles = (newFiles: File[]): File[] => {
+    return newFiles.filter(
+      (newFile) =>
+        !files.some(
+          (existing) =>
+            existing.file.name === newFile.name &&
+            existing.file.size === newFile.size
+        )
+    );
   };
 
   return (
@@ -203,7 +127,7 @@ export const FileInput = (props: { encryptedToken: string }) => {
         <DialogTitle className='text-2xl pt-2'>Upload to cloud ☁️</DialogTitle>
         <form
           onSubmit={(e) => e.preventDefault()}
-          className='flex flex-col h-full items-center w-full lg:w-2/3 justify-start border-2 border-dashed rounded-lg'
+          className='flex flex-col h-full items-center min-w-[66%] justify-start border-2 border-dashed rounded-lg'
         >
           <div
             className='flex w-full '
@@ -263,8 +187,8 @@ export const FileInput = (props: { encryptedToken: string }) => {
             </label>
           </div>
           {noInput ? null : (
-            <div className='flex flex-col w-full'>
-              <div className='max-h-[250px] overflow-y-auto no-scrollbar'>
+            <div className='flex flex-col w-fit'>
+              <div className='max-h-[250px] overflow-y-auto w-fit no-scrollbar'>
                 <table className='min-w-full divide-y'>
                   <thead className='bg-muted-background sticky top-0 z-10'>
                     <tr>
@@ -300,9 +224,10 @@ export const FileInput = (props: { encryptedToken: string }) => {
                         key={index}
                         isUploaded={file.isUploaded}
                         isError={file.isError}
+                        error={file.error}
                         imageURL={URL.createObjectURL(file.file)}
                         name={file.file.name}
-                        size={file.file.size}
+                        size={BigInt(file.file.size)}
                       />
                     ))}
                   </tbody>
