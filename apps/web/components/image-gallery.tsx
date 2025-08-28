@@ -1,6 +1,6 @@
 "use client";
 import { EmptyGallery } from "@/components/empty-gallery";
-import { IndividualImage } from "./individual-image";
+import { IndividualImage } from "@/components/individual-image";
 import { useUploadContext } from "@/contexts/upload-context";
 
 export const ImageGallery = () => {
@@ -15,11 +15,12 @@ export const ImageGallery = () => {
         <IndividualImage
           key={image.id}
           {...{
+            id: image.id,
+            mediaId: image.mediaId,
             createdAt: image.createdAt,
             fileName: image.fileName,
             fileSize: image.fileSize,
             fileType: image.fileType,
-            id: image.id,
             imageURL: image.imageURL,
             thumbnailURL: image.thumbnailURL ?? image.imageURL,
             isLocal: image.isLocal,

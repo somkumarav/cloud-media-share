@@ -1,15 +1,16 @@
 "use server";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { withServerActionAsyncCatcher } from "@/lib/async-catch";
 import { SuccessResponse } from "@/lib/success";
 import { ServerActionReturnType } from "@/types/api.types";
 import {
+  TDeleteMedia,
   TGetSignedURL,
   TUploadCompleted,
   UploadCompletedSchema,
-} from "@/types/upload";
+} from "@/types/media.types";
 import { s3 } from "@/lib/s3";
-import { GetSignedURLSchema } from "@/types/upload";
+import { GetSignedURLSchema } from "@/types/media.types";
 import { ErrorHandler } from "@/lib/error";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import prisma from "@repo/db";
@@ -128,4 +129,35 @@ export const uploadCompleted = withServerActionAsyncCatcher<
   return new SuccessResponse("Added to queue", 200, {
     imageId: mediaData.id,
   }).serialize();
+});
+
+export const deleteMedia = withServerActionAsyncCatcher<
+  TDeleteMedia,
+  ServerActionReturnType
+>(async (args) => {
+  const validatedData = await UploadCompletedSchema.safeParseAsync(args);
+
+  if (!validatedData.success) {
+    throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
+  }
+  const req = validatedData.data;
+
+  throw new ErrorHandler("Not implemented", "BAD_REQUEST");
+
+  const mediaData = await prisma.media.delete({
+    where: { id: req.mediaId },
+    include: { variants: true },
+  });
+  if (!mediaData) throw new ErrorHandler("Media not found", "BAD_REQUEST");
+
+  mediaData.variants.forEach(async (variant) => {
+    const command = new DeleteObjectCommand({
+      Bucket: "test",
+      Key: variant.storageBucketKey,
+    });
+
+    await s3.send(command);
+  });
+
+  return new SuccessResponse("Media deleted", 200).serialize();
 });

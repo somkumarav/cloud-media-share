@@ -13,3 +13,8 @@ export const UploadCompletedSchema = z.object({
   mediaId: z.number(),
 });
 export type TUploadCompleted = z.infer<typeof UploadCompletedSchema>;
+
+export const DeleteMediaSchema = z.object({
+  mediaId: z.number(),
+});
+export type TDeleteMedia = z.infer<typeof DeleteMediaSchema>;
