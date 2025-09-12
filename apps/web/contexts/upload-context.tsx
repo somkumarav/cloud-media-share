@@ -98,10 +98,13 @@ export const UploadProvider = ({
     });
 
     if (!getSignedURLAction.status) {
+      console.error(getSignedURLAction);
       throw new Error(getSignedURLAction.message ?? "Failed to get signed URL");
     }
-    if (!getSignedURLAction.data?.signedURL)
+    if (!getSignedURLAction.data?.signedURL) {
+      console.error(getSignedURLAction);
       throw new Error(getSignedURLAction.message ?? "No signed URL returned");
+    }
 
     const response = await fetch(getSignedURLAction.data?.signedURL, {
       method: "PUT",
@@ -111,14 +114,19 @@ export const UploadProvider = ({
       },
     });
 
-    if (!response.ok) throw new Error("Upload failed");
+    if (!response.ok) {
+      console.error(response);
+      throw new Error("Upload failed");
+    }
 
     const uploadCompleteResponse = await uploadCompleted({
       mediaId: getSignedURLAction.data.mediaId,
     });
 
-    if (!uploadCompleteResponse.status)
+    if (!uploadCompleteResponse.status) {
+      console.log(uploadCompleteResponse);
       throw new Error("Upload completion failed");
+    }
 
     const imageUrl = URL.createObjectURL(file);
     setMedia((prev) => [
