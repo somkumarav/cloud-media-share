@@ -36,6 +36,7 @@ async function pullAndLogJobs() {
           },
           include: {
             album: true,
+            variants: true,
           },
         });
 
@@ -49,7 +50,6 @@ async function pullAndLogJobs() {
 
         const image = await sharp(imageBuffer);
         const metadata = await image.metadata();
-        const stats = await image.stats();
 
         const thumbnailImage = await image
           .resize({ height: 550, width: 550 })
@@ -79,7 +79,23 @@ async function pullAndLogJobs() {
         await prisma.media.update({
           where: { id: mediaData!.id },
           data: {
+            status: "COMPLETED",
+            processedAt: new Date(),
+            height: metadata?.height,
+            width: metadata?.width,
+            aspectRatio: metadata.width / metadata.height,
             variants: {
+              update: {
+                where: {
+                  id: mediaData?.variants[0]?.id,
+                  type: VariantType.ORIGINAL,
+                },
+                data: {
+                  height: metadata.height,
+                  width: metadata.width,
+                  isReady: true,
+                },
+              },
               create: [
                 {
                   filename: `thumbnail-${mediaData?.filename}`,
@@ -88,6 +104,9 @@ async function pullAndLogJobs() {
                   format: "webp",
                   storageBucketKey: `${mediaData?.album.encryptedToken}/thumbnail-${mediaData?.filename}`,
                   type: VariantType.THUMBNAIL,
+                  height: 550,
+                  width: 550,
+                  isReady: true,
                 },
                 {
                   filename: `small-${mediaData?.filename}`,
@@ -96,6 +115,9 @@ async function pullAndLogJobs() {
                   format: "webp",
                   storageBucketKey: `${mediaData?.album.encryptedToken}/small-${mediaData?.filename}`,
                   type: VariantType.SMALL,
+                  height: 600,
+                  width: 600,
+                  isReady: true,
                 },
               ],
             },

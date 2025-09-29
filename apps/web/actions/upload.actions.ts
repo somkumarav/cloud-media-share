@@ -89,6 +89,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
             filename: fileName,
             fileSize: BigInt(fileSize),
             mimeType,
+            isReady: true,
             format: mimeType.split("/")[1] ?? "",
             storageBucketKey: `${encryptedToken}/${fileName}`,
             type: "ORIGINAL",
