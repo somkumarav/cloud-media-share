@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { generateEncryptedId } from "@repo/utils";
 export * from "@prisma/client";
 
 const prismaClientSingleton = () => {
@@ -6,6 +7,18 @@ const prismaClientSingleton = () => {
 
   return base.$extends({
     query: {
+      album: {
+        async create({ args, query }) {
+          const result = await query(args);
+          const encryptedToken = generateEncryptedId(result.id as number);
+
+          const updated = await base.album.update({
+            where: { id: result.id },
+            data: { encryptedToken },
+          });
+          return updated;
+        },
+      },
       media: {
         async create({ args, query }) {
           const result = await query(args);

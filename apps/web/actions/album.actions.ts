@@ -1,7 +1,7 @@
 "use server";
 import { redirect } from "next/navigation";
 import prisma, { Album } from "@repo/db";
-import { getDecryptedId, generateEncryptedId, GIGABYTE } from "@repo/utils";
+import { getDecryptedId, GIGABYTE } from "@repo/utils";
 import { withServerActionAsyncCatcher } from "@/lib/async-catch";
 import { ServerActionReturnType } from "@/types/api.types";
 import { z } from "zod";
@@ -24,16 +24,10 @@ export const createAlbum = async () => {
     redirect("/service-unavailable");
   }
 
-  const encryptedToken = generateEncryptedId(allAlbums.pop()?.id ?? 0 + 1);
-
-  const data = await prisma.album.create({
-    data: {
-      encryptedToken,
-    },
-  });
+  const data = await prisma.album.create({ data: {} });
 
   if (data.id) {
-    redirect(`/album/${encryptedToken}`);
+    redirect(`/album/${data.encryptedToken}`);
   } else {
     throw new Error("Failed to create album");
   }
