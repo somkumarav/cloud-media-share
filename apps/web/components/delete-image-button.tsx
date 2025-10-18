@@ -5,7 +5,7 @@ import { Trash2 } from "lucide-react";
 
 export const DeleteImageButton = (props: { mediaId: number }) => {
   const { deleteFile } = useUploadContext();
-  const handleDownload = async (e: React.MouseEvent) => {
+  const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -15,7 +15,7 @@ export const DeleteImageButton = (props: { mediaId: number }) => {
 
   return (
     <Button
-      onClick={(e) => handleDownload(e)}
+      onClick={(e) => handleDelete(e)}
       variant='destructive'
       className='p-4 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#a52222]'
       aria-label='Delete image'
