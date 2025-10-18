@@ -1,7 +1,7 @@
 "use client";
 import { DownloadCloudIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { downloadImage } from "../actions/download.actions";
+import { downloadImage } from "@/actions/download.actions";
 
 export const DownloadImageButton = (props: {
   imageId: number;
@@ -12,9 +12,9 @@ export const DownloadImageButton = (props: {
     e.preventDefault();
     e.stopPropagation();
 
-    if (props.isLocal && props.imageURL) {
+    const handleFileDownload = async (imageURL: string) => {
       try {
-        const response = await fetch(props.imageURL);
+        const response = await fetch(imageURL);
         const blob = await response.blob();
         const blobURL = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
@@ -27,25 +27,15 @@ export const DownloadImageButton = (props: {
       } catch (error) {
         console.error("Error downloading local image:", error);
       }
+    };
+
+    if (props.isLocal && props.imageURL) {
+      handleFileDownload(props.imageURL);
       return;
     }
 
-    try {
-      const signedURL = await downloadImage(props.imageId);
-
-      const response = await fetch(signedURL);
-      const blob = await response.blob();
-      const blobURL = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = blobURL;
-      link.download = "";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(blobURL);
-    } catch (error) {
-      console.error("Error downloading image:", error);
-    }
+    const signedURL = await downloadImage(props.imageId);
+    handleFileDownload(signedURL);
   };
 
   return (
