@@ -9,8 +9,7 @@ export const DeleteImageButton = (props: { mediaId: number }) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const response = await deleteFile(props.mediaId);
-    console.log(response);
+    await deleteFile(props.mediaId);
   };
 
   return (
