@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const PillCTA = () => {
   return (
-    <div className='mt-32 mb-3 opacity-0 animate-top-fade-in [animation-delay:200ms;]'>
+    <div className='mt-24 mb-3 opacity-0 animate-top-fade-in [animation-delay:200ms;]'>
       <Link
         href='https://portfolio-4rc.pages.dev'
         target='_blank'
