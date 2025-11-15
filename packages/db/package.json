@@ -3,25 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "types": "src/index.d.ts",
   "scripts": {
-    "start": "node ./dist/index.js",
-    "build": "tsc -p tsconfig.json",
-    "clean": "rm -rf dist",
     "db:generate": "pnpm prisma generate",
     "db:push": "pnpm prisma db push",
     "db:studio": "pnpm prisma studio"
   },
   "keywords": [],
   "author": "",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
   "dependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
@@ -36,7 +27,6 @@
     "prisma": "^6.13.0"
   },
   "files": [
-    "dist",
     "src",
     "prisma"
   ]
