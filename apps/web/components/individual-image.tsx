@@ -1,8 +1,20 @@
+import { useUploadContext } from "@/contexts/upload-context";
 import Image from "next/image";
 import { cva, VariantProps } from "class-variance-authority";
 import { cn, formatFileSize } from "@/lib/utils";
 import { DownloadImageButton } from "@/components/download-image-button";
 import { DeleteImageButton } from "@/components/delete-image-button";
+import { Download, EllipsisVertical, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { downloadImage } from "@/actions/download.actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 type TProps = {
   id: number;
@@ -14,7 +26,46 @@ type TProps = {
   isLocal: boolean;
 };
 const IndividualImage = (image: TProps) => {
+  const { deleteFile } = useUploadContext();
   const fileSize = formatFileSize(image.fileSize);
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    await deleteFile(image.mediaId);
+  };
+
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const handleFileDownload = async (imageURL: string) => {
+      try {
+        const response = await fetch(imageURL);
+        const blob = await response.blob();
+        const blobURL = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobURL;
+        link.download = "";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobURL);
+      } catch (error) {
+        console.error("Error downloading local image:", error);
+      }
+    };
+
+    if (image.isLocal && image.imageURL) {
+      handleFileDownload(image.imageURL);
+      return;
+    }
+
+    const signedURL = await downloadImage(image.id);
+    handleFileDownload(signedURL);
+  };
+
   return (
     <div key={image.id} className='rounded-md border border-white/10'>
       <div className='relative aspect-square group'>
@@ -40,7 +91,7 @@ const IndividualImage = (image: TProps) => {
         <p title={image.fileName} className='truncate'>
           {image.fileName}
         </p>
-        <div>
+        <div className='flex items-center justify-between'>
           <FileSizePill
             fileSize={fileSize.formatted}
             className='-translate-x-[2px]'
@@ -53,6 +104,26 @@ const IndividualImage = (image: TProps) => {
                 : "small"
             }
           />
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger className='outline-none'>
+              <EllipsisVertical
+                size={16}
+                className='hover:text-accent-foreground transition-colors'
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end'>
+              {/* <DropdownMenuItem>
+                <Edit2 className='hover:text-accent-foreground' /> Edit name
+              </DropdownMenuItem> */}
+              <DropdownMenuItem onClick={handleDownload}>
+                <Download className='hover:text-accent-foreground' /> Download
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant='destructive' onClick={handleDelete}>
+                <Trash2 className='text-destructive' /> Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>

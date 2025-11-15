@@ -76,6 +76,7 @@ const config: Config = {
     animation: {
       slide: "slide 6s linear infinite",
       spin: "spin 1s linear infinite",
+      pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       "fade-in": "fade-in 3000ms ease forwards",
       "top-fade-in": "top-fade-in 1000ms ease forwards",
     },
@@ -98,6 +99,9 @@ const config: Config = {
       spin: {
         "0%": { transform: "rotate(0deg)" },
         "100%": { transform: "rotate(360deg)" },
+      },
+      pulse: {
+        "50%": { opacity: "0.5" },
       },
     },
   },
