@@ -6,7 +6,7 @@
   "main": "dist/worker.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/worker.js",
+    "start": "tsx src/worker.ts",
     "dev": "nodemon --exec tsx src/worker.ts"
   },
   "dependencies": {

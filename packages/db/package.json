@@ -3,31 +3,31 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "src/index.js",
-  "module": "src/index.js",
-  "types": "src/index.d.ts",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "scripts": {
     "db:generate": "pnpm prisma generate",
     "db:push": "pnpm prisma db push",
     "db:studio": "pnpm prisma studio"
   },
-  "keywords": [],
-  "author": "",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
+
   "dependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
     "@repo/utils":"workspace:*",
     "@types/node": "^22.15.3",
-    "node": "^18.20.0",
     "typescript": "5.8.2",
     "@prisma/client": "6.13.0"
   },
-  "license": "ISC",
   "devDependencies": {
     "prisma": "^6.13.0"
-  },
-  "files": [
-    "src",
-    "prisma"
-  ]
+  }
 }

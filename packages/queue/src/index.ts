@@ -1,13 +1,17 @@
 import "dotenv/config";
 import * as ioredis from "ioredis";
 
-export const redis = new ioredis.Redis({
-  host: process.env.REDIS_HOST || "localhost",
-  port: parseInt(process.env.REDIS_PORT || "6379"),
-  password: process.env.REDIS_PASSWORD || undefined,
-  maxRetriesPerRequest: 3,
-  // retryDelayOnFailover: 100,
-});
+export const redis = new ioredis.Redis(
+  process.env.REDIS_URL ?? "redis://localhost:6379"
+);
+
+// export const redis = new ioredis.Redis({
+// host: process.env.REDIS_URL || "localhost",
+// port: parseInt(process.env.REDIS_PORT || "6379"),
+// password: process.env.REDIS_PASSWORD || undefined,
+// maxRetriesPerRequest: 3,
+// retryDelayOnFailover: 100,
+// });
 
 redis.on("connect", () => {
   console.log("Connected to Redis");

@@ -13,8 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { downloadImage } from "@/actions/download.actions";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 type TProps = {
   id: number;

@@ -1,5 +1,5 @@
 {
-  "name": "cloud-media-share",
+  "name": "worker",
   "private": true,
   "scripts": {
     "build": "turbo run build",
@@ -9,7 +9,9 @@
     "check-types": "turbo run check-types",
     "db:push": "pnpm --filter @repo/db db:push",
     "db:generate": "pnpm --filter @repo/db db:generate",
-    "db:studio": "pnpm --filter @repo/db db:studio"
+    "db:studio": "pnpm --filter @repo/db db:studio",
+    "web:start": "pnpm --filter web start",
+    "worker:start": "pnpm --filter worker start"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

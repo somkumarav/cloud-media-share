@@ -181,21 +181,12 @@ importers:
       '@prisma/client':
         specifier: 6.13.0
         version: 6.13.0(prisma@6.14.0(typescript@5.8.2))(typescript@5.8.2)
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
       '@repo/utils':
         specifier: workspace:*
         version: link:../utils
       '@types/node':
         specifier: ^22.15.3
         version: 22.17.1
-      node:
-        specifier: ^18.20.0
-        version: 18.20.8
       typescript:
         specifier: 5.8.2
         version: 5.8.2
@@ -242,12 +233,6 @@ importers:
 
   packages/queue:
     dependencies:
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
       '@types/node':
         specifier: ^22.15.3
         version: 22.17.1
@@ -257,9 +242,6 @@ importers:
       ioredis:
         specifier: ^5.3.2
         version: 5.7.0
-      node:
-        specifier: ^18.20.0
-        version: 18.20.8
       typescript:
         specifier: 5.8.2
         version: 5.8.2
@@ -299,21 +281,12 @@ importers:
 
   packages/utils:
     dependencies:
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
       '@types/node':
         specifier: ^22.15.3
         version: 22.17.1
       dotenv:
         specifier: ^17.2.1
         version: 17.2.1
-      node:
-        specifier: ^18.20.0
-        version: 18.20.8
       typescript:
         specifier: 5.8.2
         version: 5.8.2
@@ -2506,16 +2479,8 @@ packages:
       sass:
         optional: true
 
-  node-bin-setup@1.1.4:
-    resolution: {integrity: sha512-vWNHOne0ZUavArqPP5LJta50+S8R261Fr5SvGul37HbEDcowvLjwdvd0ZeSr0r2lTSrPxl6okq9QUw8BFGiAxA==}
-
   node-fetch-native@1.6.7:
     resolution: {integrity: sha512-g9yhqoedzIUm0nTnTqAQvueMPVOuIY16bqgAJJC8XOOubYFNwz6IER9qs0Gq2Xd0+CecCKFjtdDTMA4u4xG06Q==}
-
-  node@18.20.8:
-    resolution: {integrity: sha512-oQSpVXWlayMuvIRCn/CiA9UQtEq/vdiPGeBcKE9JP3uAfJn00vMJA7rlNvjxzbIj98eu52SEHmQBQI/ngMCWOw==}
-    engines: {npm: '>=5.0.0'}
-    hasBin: true
 
   nodemon@3.1.10:
     resolution: {integrity: sha512-WDjw3pJ0/0jMFmyNDp3gvY2YizjLmmOUQo6DEBY+JgdvW/yQ9mEeSw6H5ythl5Ny2ytb7f9C2nIbjSxMNzbJXw==}
@@ -5920,13 +5885,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  node-bin-setup@1.1.4: {}
-
   node-fetch-native@1.6.7: {}
-
-  node@18.20.8:
-    dependencies:
-      node-bin-setup: 1.1.4
 
   nodemon@3.1.10:
     dependencies:
