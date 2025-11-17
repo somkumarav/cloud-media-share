@@ -4,7 +4,7 @@ export const PillCTA = () => {
   return (
     <div className='mt-24 mb-3 opacity-0 animate-top-fade-in [animation-delay:200ms;]'>
       <Link
-        href='https://portfolio-4rc.pages.dev'
+        href='http://somsnation.me'
         target='_blank'
         className='py-[2px] px-5 rounded-full bg-accent-background text-accent-foreground hover:bg-accent-foreground/20 text-xs md:text-base transition-colors duration-300'
       >
