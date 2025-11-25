@@ -1,0 +1,5 @@
+/nodemodules
+build
+./apps/web/.env
+./apps/worker/.env
+./packages/db/.env
