@@ -51,6 +51,7 @@ jobs:
           # Update images in deployment.yml
           sed -i "s|image: somkumarva/cms-web:.*|image: somkumarva/cms-web:${SHA}|" ./cms/deployment.yml
           sed -i "s|image: somkumarva/cms-worker:.*|image: somkumarva/cms-worker:${SHA}|" ./cms/deployment.yml
+          sed -i "s|image: somkumarva/cms-web:.*|image: somkumarva/cms-web:${SHA}|" ./cms/db-migration.yml
 
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
