@@ -3,3 +3,4 @@ build
 ./apps/web/.env
 ./apps/worker/.env
 ./packages/db/.env
+./packages/queue/.env
