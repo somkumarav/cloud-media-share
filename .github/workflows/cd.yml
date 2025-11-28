@@ -63,5 +63,6 @@ jobs:
           fi
 
           git add ./cms/deployment.yml
+          git add ./cms/db-migration.yml
           git commit -m "update(cms): deployment image to ${SHA}"
           git push https://${PAT}@github.com/somkumarav/k8s.git main
