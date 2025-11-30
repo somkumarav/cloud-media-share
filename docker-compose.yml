@@ -4,24 +4,21 @@ services:
   web:
     build:
       context: .
-      dockerfile: docker/Dockerfile.web   # <– rename if your file is named differently
+      dockerfile: docker/Dockerfile.web
     container_name: cms-web
     depends_on:
       - db
       - redis
     environment:
-      # adjust to match what your app expects
       DATABASE_URL: postgres://postgres:postgres@db:5432/cms
       REDIS_URL: redis://redis:6379
-      # anything else your web app needs, e.g.:
-      # NODE_ENV: production
     ports:
-      - "3000:3000" # expose Next.js
+      - "3000:3000"
 
   worker:
     build:
       context: .
-      dockerfile: docker/Dockerfile.worker  # <– rename if needed
+      dockerfile: docker/Dockerfile.worker
     container_name: cms-worker
     depends_on:
       - db
@@ -29,7 +26,6 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/cms
       REDIS_URL: redis://redis:6379
-      # NODE_ENV: production
 
   db:
     image: postgres:16-alpine
@@ -42,7 +38,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432" # optional; handy for connecting from host (psql, Prisma Studio)
+      - "5432:5432"
 
   redis:
     image: redis:7-alpine
@@ -52,7 +48,7 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "6379:6379" # optional; for debugging from host
+      - "6379:6379"
 
 volumes:
   postgres_data:
