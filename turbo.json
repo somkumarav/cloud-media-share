@@ -4,7 +4,8 @@
   "globalEnv": [
     "CLOUDFLARE_ENDPOINT",
     "CLOUDFLARE_ACCESSID",
-    "CLOUDFLARE_ACCESSSECRET"
+    "CLOUDFLARE_ACCESSSECRET",
+    "ENCRYPTION_KEY"
   ],
   "tasks": {
     "build": {

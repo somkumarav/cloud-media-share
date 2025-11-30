@@ -2,17 +2,8 @@ import "dotenv/config";
 import prisma, { VariantType } from "@repo/db";
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import sharp from "sharp";
-import { S3Client } from "@aws-sdk/client-s3";
+import { s3 } from "@repo/utils";
 import { redis } from "@repo/queue";
-
-export const s3 = new S3Client({
-  region: "auto",
-  endpoint: process.env.CLOUDFLARE_ENDPOINT,
-  credentials: {
-    accessKeyId: process.env.CLOUDFLARE_ACCESSID as string,
-    secretAccessKey: process.env.CLOUDFLARE_ACCESSSECRET as string,
-  },
-});
 
 async function streamToBuffer(stream: any): Promise<Buffer> {
   return new Promise((resolve, reject) => {

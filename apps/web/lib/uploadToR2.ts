@@ -1,5 +1,5 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { s3 } from "@/lib/s3";
+import { s3 } from "@repo/utils";
 
 export const uploadToR2 = async (file: File, fileName: string) => {
   const buffer = await file.arrayBuffer();

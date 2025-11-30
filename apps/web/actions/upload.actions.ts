@@ -9,7 +9,7 @@ import {
   TUploadCompleted,
   UploadCompletedSchema,
 } from "@/types/media.types";
-import { s3 } from "@/lib/s3";
+import { s3 } from "@repo/utils";
 import { GetSignedURLSchema } from "@/types/media.types";
 import { ErrorHandler } from "@/lib/error";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
