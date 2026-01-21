@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { listImagesInDirectory } from "@/actions/r2.actions";
+import { getAllImagesFromAlbum } from "@/actions/album.actions";
 import {
   deleteMedia,
   getSignedURL,
@@ -58,7 +58,7 @@ export const UploadProvider = ({
   useEffect(() => {
     const loadBucketImages = async () => {
       try {
-        const images = await listImagesInDirectory(encryptedToken); //
+        const images = await getAllImagesFromAlbum(encryptedToken);
         const mappedImages = images.map(
           (image) =>
             ({

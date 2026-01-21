@@ -1,7 +1,7 @@
 "use server";
 import { redirect } from "next/navigation";
 import prisma, { Album } from "@repo/db";
-import { getDecryptedId, GIGABYTE } from "@repo/utils";
+import { getDecryptedId, GIGABYTE, s3 } from "@repo/utils";
 import { withServerActionAsyncCatcher } from "@/lib/async-catch";
 import { ServerActionReturnType } from "@/types/api.types";
 import { z } from "zod";
@@ -12,6 +12,8 @@ import {
   TChangeAlbumNameSchema,
 } from "@/types/album.types";
 import { revalidatePath } from "next/cache";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export const createAlbum = async () => {
   const allAlbums = await prisma.album.findMany();
@@ -88,3 +90,46 @@ export const checkIfAlbumExists = withServerActionAsyncCatcher<
     ...{ ...data, albumSize: albumSize },
   }).serialize();
 });
+
+export async function getAllImagesFromAlbum(encryptedToken: string) {
+  const decryptedAlbumId = getDecryptedId(encryptedToken);
+  const albumContent = await prisma.media.findMany({
+    where: {
+      albumId: decryptedAlbumId,
+    },
+  });
+
+  try {
+    const imageObjects = albumContent.filter((obj) => obj.type === "IMAGE");
+
+    const imageURLs = await Promise.all(
+      imageObjects.map(async (obj) => {
+        const imageBucketKey = `${encryptedToken}/${obj.filename}`;
+        const thumbnailBucketKey = `${encryptedToken}/thumbnail-${obj.filename}`;
+
+        const getObjectCommand = new GetObjectCommand({
+          Bucket: "test",
+          Key: imageBucketKey,
+        });
+        const getThumbnailObjectCommand = new GetObjectCommand({
+          Bucket: "test",
+          Key: thumbnailBucketKey,
+        });
+
+        const imageURL = await getSignedUrl(s3, getObjectCommand, {
+          expiresIn: 36000,
+        });
+        const thumbnailURL = await getSignedUrl(s3, getThumbnailObjectCommand, {
+          expiresIn: 36000,
+        });
+        return { ...obj, imageURL, thumbnailURL };
+      })
+    );
+
+    return imageURLs;
+  } catch (error) {
+    console.error("Error listing objects in R2:", error);
+    throw error;
+  }
+}
+
