@@ -104,8 +104,8 @@ export async function getAllImagesFromAlbum(encryptedToken: string) {
 
     const imageURLs = await Promise.all(
       imageObjects.map(async (obj) => {
-        const imageBucketKey = `${encryptedToken}/${obj.filename}`;
-        const thumbnailBucketKey = `${encryptedToken}/thumbnail-${obj.filename}`;
+        const imageBucketKey = `${encryptedToken}/${obj.originalName}`;
+        const thumbnailBucketKey = `${encryptedToken}/thumbnail-${obj.originalName}`;
 
         const getObjectCommand = new GetObjectCommand({
           Bucket: "test",

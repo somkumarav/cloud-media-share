@@ -14,6 +14,12 @@ export const UploadCompletedSchema = z.object({
 });
 export type TUploadCompleted = z.infer<typeof UploadCompletedSchema>;
 
+export const ChangeMediaNameSchema = z.object({
+  mediaId: z.number(),
+  newName: z.string().min(2),
+});
+export type TChangeMediaName = z.infer<typeof ChangeMediaNameSchema>;
+
 export const DeleteMediaSchema = z.object({
   mediaId: z.number(),
 });

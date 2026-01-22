@@ -4,7 +4,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { cn, formatFileSize } from "@/lib/utils";
 import { DownloadImageButton } from "@/components/download-image-button";
 import { DeleteImageButton } from "@/components/delete-image-button";
-import { Download, EllipsisVertical, Trash2 } from "lucide-react";
+import { Download, Edit2, EllipsisVertical, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { downloadImage } from "@/actions/download.actions";
+import { EditMediaNameDialog } from "@/components/edit-media-name-dialog";
 
 type TProps = {
   id: number;
@@ -110,9 +111,11 @@ const IndividualImage = (image: TProps) => {
               />
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
-              {/* <DropdownMenuItem>
-                <Edit2 className='hover:text-accent-foreground' /> Edit name
-              </DropdownMenuItem> */}
+              <EditMediaNameDialog mediaId={image.id} currentName={image.fileName}>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <Edit2 className="hover:text-accent-foreground" /> Edit name
+                </DropdownMenuItem>
+              </EditMediaNameDialog>
               <DropdownMenuItem onClick={handleDownload}>
                 <Download className='hover:text-accent-foreground' /> Download
               </DropdownMenuItem>
