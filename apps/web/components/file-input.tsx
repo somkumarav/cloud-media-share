@@ -37,10 +37,10 @@ export const FileInput = () => {
         prev.map((item) =>
           item.file === file
             ? {
-                file: item.file,
-                isUploaded: true,
-                isError: item.isError,
-              }
+              file: item.file,
+              isUploaded: true,
+              isError: item.isError,
+            }
             : item
         )
       );
@@ -50,11 +50,11 @@ export const FileInput = () => {
           prev.map((item) =>
             item.file === file
               ? {
-                  file: item.file,
-                  isUploaded: item.isUploaded,
-                  isError: true,
-                  error: error.message,
-                }
+                file: item.file,
+                isUploaded: item.isUploaded,
+                isError: true,
+                error: error.message,
+              }
               : item
           )
         );
@@ -187,8 +187,8 @@ export const FileInput = () => {
             </label>
           </div>
           {noInput ? null : (
-            <div className='flex flex-col w-fit'>
-              <div className='max-h-[250px] overflow-y-auto w-fit no-scrollbar'>
+            <div className='flex flex-col w-full'>
+              <div className='max-h-[250px] max-w-[650px] overflow-y-auto no-scrollbar'>
                 <table className='min-w-full divide-y'>
                   <thead className='bg-muted-background sticky top-0 z-10'>
                     <tr>
