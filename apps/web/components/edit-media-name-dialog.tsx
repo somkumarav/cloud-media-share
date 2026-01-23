@@ -2,10 +2,10 @@
 
 import { ReactNode, useState } from "react";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { editMediaName } from "@/actions/media.actions"; // Import your existing action
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { editMediaName } from "@/actions/media.actions";
 import { Loader2 } from "lucide-react";
 
 export const EditMediaNameDialog = ({
@@ -26,14 +26,12 @@ export const EditMediaNameDialog = ({
     setIsLoading(true);
 
     try {
-      // Calling your specific action with the expected arguments
       const result = await editMediaName({
         mediaId: mediaId,
         newName: newName
       });
 
       if (result.status) {
-        // Optional: Add toast notification here
         setIsOpen(false);
       } else {
         console.error(result.message);
