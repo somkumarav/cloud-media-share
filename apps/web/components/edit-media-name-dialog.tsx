@@ -5,7 +5,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { editMediaName } from "@/actions/media.actions";
+import { useUploadContext } from "@/contexts/upload-context";
 import { Loader2 } from "lucide-react";
 
 export const EditMediaNameDialog = ({
@@ -20,22 +20,15 @@ export const EditMediaNameDialog = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [newName, setNewName] = useState(currentName);
+  const { editFileName } = useUploadContext()
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const result = await editMediaName({
-        mediaId: mediaId,
-        newName: newName
-      });
-
-      if (result.status) {
-        setIsOpen(false);
-      } else {
-        console.error(result.message);
-      }
+      await editFileName(mediaId, newName)
+      setIsOpen(false)
     } catch (error) {
       console.error("Failed to update name", error);
     } finally {

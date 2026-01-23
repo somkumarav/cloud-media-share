@@ -7,6 +7,7 @@ import {
   uploadCompleted,
 } from "@/actions/upload.actions";
 import { ServerActionReturnType } from "@/types/api.types";
+import { editMediaName } from "@/actions/media.actions";
 
 type Media = {
   id: number;
@@ -32,6 +33,7 @@ interface UploadContextType {
     message: string;
   }>;
   deleteFile: (mediaId: number) => Promise<ServerActionReturnType>;
+  editFileName: (mediaId: number, newName: string) => Promise<ServerActionReturnType>;
 }
 
 const UploadContext = createContext<UploadContextType | undefined>(undefined);
@@ -160,6 +162,23 @@ export const UploadProvider = ({
     return res;
   };
 
+  const editFileName = async (mediaId: number, newName: string) => {
+    const file = media.find(file => file.mediaId == mediaId)
+    if (!file) throw new Error("File not found");
+
+    const res = await editMediaName({ mediaId, newName })
+    if (res.status) {
+      setMedia(prev =>
+        prev.map(item =>
+          item.mediaId === mediaId
+            ? { ...item, fileName: newName }
+            : item
+        )
+      );
+    }
+    return res
+  }
+
   const value: UploadContextType = {
     media,
     isLoading,
@@ -167,6 +186,7 @@ export const UploadProvider = ({
     error,
     uploadFile,
     deleteFile,
+    editFileName
   };
 
   return (
