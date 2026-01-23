@@ -16,11 +16,10 @@ export const CopyURLButton = () => {
       )}
       onClick={async () => {
         setIsClicked(true);
-        // urlCopied.innerHTML = window.location.href;
         await navigator.clipboard.writeText(window.location.href);
         setTimeout(() => {
           setIsClicked(false);
-        }, 400);
+        }, 1000);
       }}
     >
       {isClicked ? (
