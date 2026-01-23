@@ -72,7 +72,7 @@ export const EditMediaNameDialog = ({
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="outline" disabled={isLoading}>
+              <Button type="button" variant="secondary" disabled={isLoading}>
                 Cancel
               </Button>
             </DialogClose>
