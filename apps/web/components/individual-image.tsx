@@ -23,6 +23,7 @@ type TProps = {
   fileSize: bigint;
   fileName: string;
   isLocal: boolean;
+  fileType: string
 };
 const IndividualImage = (image: TProps) => {
   const { deleteFile } = useUploadContext();
@@ -68,7 +69,7 @@ const IndividualImage = (image: TProps) => {
   return (
     <div key={image.id} className='rounded-md border border-white/10'>
       <div className='relative aspect-square group'>
-        <div className='absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-200 flex items-center justify-center space-x-2'>
+        <div className='z-10 absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-200 flex items-center justify-center space-x-2'>
           <DownloadImageButton
             imageId={image.id}
             isLocal={image.isLocal}
@@ -76,15 +77,27 @@ const IndividualImage = (image: TProps) => {
           />
           <DeleteImageButton mediaId={image.mediaId} />
         </div>
-        <Image
-          loading='lazy'
-          src={image.thumbnailURL}
-          alt={image.fileName}
-          className='object-cover w-full h-full rounded-t-md'
-          unoptimized
-          height={100}
-          width={100}
-        />
+        {image.fileType.startsWith("VIDEO") ?
+          <video
+            controls
+            controlsList="nodownload noremoteplayback"
+            className='object-cover w-full h-full rounded-t-md'
+            muted
+            autoPlay
+            preload="metadata"
+          >
+            <source src={image.imageURL} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          : < Image
+            loading='lazy'
+            src={image.thumbnailURL}
+            alt={image.fileName}
+            className='object-cover w-full h-full rounded-t-md'
+            unoptimized
+            height={100}
+            width={100}
+          />}
       </div>
       <div className='px-2 pt-3 pb-2'>
         <p title={image.fileName} className='truncate'>

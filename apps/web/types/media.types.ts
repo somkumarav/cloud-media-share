@@ -5,7 +5,7 @@ export const GetSignedURLSchema = z.object({
   fileName: z.string(),
   mimeType: z.string(),
   fileSize: z.number(),
-  checksum: z.string(),
+  checksum: z.string().nullable(),
 });
 export type TGetSignedURL = z.infer<typeof GetSignedURLSchema>;
 

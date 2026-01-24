@@ -26,10 +26,9 @@ export const getSignedURL = withServerActionAsyncCatcher<
   if (!validatedData.success) {
     throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
   }
-  const { fileName, encryptedToken, fileSize, mimeType, checksum } =
-    validatedData.data;
-
+  const { fileName, encryptedToken, fileSize, mimeType, checksum } = validatedData.data;
   const decryptedAlbumId = getDecryptedId(encryptedToken);
+  const isVideo = mimeType.startsWith("video/")
 
   const albumContent = await prisma.media.groupBy({
     by: ["albumId"],
@@ -67,7 +66,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
     Key: `${encryptedToken}/${fileName}`,
     ContentType: mimeType,
     ContentLength: fileSize,
-    ChecksumSHA256: checksum,
+    ...(checksum && { ChecksumSHA256: checksum }),
   });
 
   const signedURL = await getSignedUrl(s3, command, {
@@ -80,7 +79,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
       filename: fileName,
       mimeType,
       fileSize: BigInt(fileSize),
-      type: mimeType.startsWith("image/") ? "IMAGE" : "VIDEO",
+      type: isVideo ? "VIDEO" : "IMAGE",
       storageBucketKey: `${encryptedToken}/${fileName}`,
       albumId: decryptedAlbumId,
       variants: {

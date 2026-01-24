@@ -178,7 +178,7 @@ export const FileInput = () => {
                     const fileList = e.target.files;
                     if (fileList) handleFileChange(fileList);
                   }}
-                  accept='image/jpeg, image/jpg, image/png'
+                  accept={acceptedFileType.join(', ')}
                   id='dropzone-file'
                   type='file'
                   className='hidden'

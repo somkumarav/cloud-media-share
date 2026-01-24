@@ -90,7 +90,9 @@ export const UploadProvider = ({
   }, [encryptedToken]);
 
   const uploadFile = async (file: File) => {
-    const checksum = await computeSHA256(file);
+    const isVideo = file.type.startsWith("video/")
+
+    const checksum = isVideo ? null : await computeSHA256(file)
     const getSignedURLAction = await getSignedURL({
       fileName: file.name,
       encryptedToken,
@@ -108,7 +110,7 @@ export const UploadProvider = ({
       throw new Error(getSignedURLAction.message ?? "No signed URL returned");
     }
 
-    const response = await fetch(getSignedURLAction.data?.signedURL, {
+    const uploadToBucket = await fetch(getSignedURLAction.data?.signedURL, {
       method: "PUT",
       body: file,
       headers: {
@@ -116,8 +118,8 @@ export const UploadProvider = ({
       },
     });
 
-    if (!response.ok) {
-      console.error(response);
+    if (!uploadToBucket.ok) {
+      console.error(uploadToBucket);
       throw new Error("Upload failed");
     }
 
