@@ -100,10 +100,9 @@ export async function getAllImagesFromAlbum(encryptedToken: string) {
   });
 
   try {
-    const imageObjects = albumContent.filter((obj) => obj.type === "IMAGE");
-
     const imageURLs = await Promise.all(
-      imageObjects.map(async (obj) => {
+      albumContent.map(async (obj) => {
+        const isVideo = obj.type == "VIDEO"
         const imageBucketKey = `${encryptedToken}/${obj.originalName}`;
         const thumbnailBucketKey = `${encryptedToken}/thumbnail-${obj.originalName}`;
 
@@ -111,18 +110,22 @@ export async function getAllImagesFromAlbum(encryptedToken: string) {
           Bucket: "test",
           Key: imageBucketKey,
         });
-        const getThumbnailObjectCommand = new GetObjectCommand({
-          Bucket: "test",
-          Key: thumbnailBucketKey,
-        });
-
         const imageURL = await getSignedUrl(s3, getObjectCommand, {
           expiresIn: 36000,
         });
-        const thumbnailURL = await getSignedUrl(s3, getThumbnailObjectCommand, {
-          expiresIn: 36000,
-        });
-        return { ...obj, imageURL, thumbnailURL };
+
+        if (!isVideo) {
+          const getThumbnailObjectCommand = new GetObjectCommand({
+            Bucket: "test",
+            Key: thumbnailBucketKey,
+          });
+          const thumbnailURL = await getSignedUrl(s3, getThumbnailObjectCommand, {
+            expiresIn: 36000,
+          });
+          return { ...obj, imageURL, thumbnailURL };
+        }
+
+        return { ...obj, imageURL, thumbnailURL: null };
       })
     );
 

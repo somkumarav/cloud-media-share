@@ -1,7 +1,13 @@
 export const acceptedFileType = [
+  // Images
   "image/jpeg",
   "image/png",
   "image/webp",
-  "image/mp4",
-  "image/webm",
+  "image/gif",
+
+  // Videos
+  "video/mp4",
+  "video/webm",
+  "video/ogg",
+  "video/quicktime",
 ];
