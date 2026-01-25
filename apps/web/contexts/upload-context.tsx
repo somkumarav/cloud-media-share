@@ -1,5 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios"
 import { getAllImagesFromAlbum } from "@/actions/album.actions";
 import {
   deleteMedia,
@@ -28,9 +29,13 @@ interface UploadContextType {
   isLoading?: boolean;
   isError?: boolean;
   error?: string | null;
-  uploadFile: (file: File) => Promise<{
+  uploadFile: (
+    file: File,
+    onProgress?: (percent: number) => void
+  ) => Promise<{
     status: boolean;
     message: string;
+    mediaId: number | undefined;
   }>;
   deleteFile: (mediaId: number) => Promise<ServerActionReturnType>;
   editFileName: (mediaId: number, newName: string) => Promise<ServerActionReturnType>;
@@ -89,10 +94,10 @@ export const UploadProvider = ({
     loadBucketImages();
   }, [encryptedToken]);
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = async (file: File, onProgress?: (percent: number) => void) => {
     const isVideo = file.type.startsWith("video/")
-
     const checksum = isVideo ? null : await computeSHA256(file)
+
     const getSignedURLAction = await getSignedURL({
       fileName: file.name,
       encryptedToken,
@@ -110,15 +115,20 @@ export const UploadProvider = ({
       throw new Error(getSignedURLAction.message ?? "No signed URL returned");
     }
 
-    const uploadToBucket = await fetch(getSignedURLAction.data?.signedURL, {
-      method: "PUT",
-      body: file,
-      headers: {
-        "Content-Type": file.type,
+
+    const uploadToBucket = await axios.put(getSignedURLAction.data.signedURL, file, {
+      headers: { "Content-Type": file.type },
+      onUploadProgress: (progressEvent) => {
+        if (onProgress && progressEvent.total) {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          onProgress(percentCompleted);
+        }
       },
     });
 
-    if (!uploadToBucket.ok) {
+    if (uploadToBucket.status !== 200) {
       console.error(uploadToBucket);
       throw new Error("Upload failed");
     }
@@ -149,7 +159,7 @@ export const UploadProvider = ({
       },
       ...prev,
     ]);
-    return { status: true, message: "Upload successful" };
+    return { status: true, message: "Upload successful", mediaId: uploadCompleteResponse?.data?.imageId };
   };
 
   const deleteFile = async (mediaId: number) => {
