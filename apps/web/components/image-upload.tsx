@@ -4,12 +4,14 @@ import Image from "next/image";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { formatFileSize } from "@/lib/utils";
 import { useEffect } from "react";
+import { UploadProgressBar } from "@/components/ui/upload-progress-bar";
 
 export const ImageUpload = ({
   name,
   size,
   isUploaded,
   preview,
+  progress,
   isError,
   error,
   fileType
@@ -18,6 +20,7 @@ export const ImageUpload = ({
   size: number;
   isUploaded: boolean;
   preview: string;
+  progress: number;
   isError: boolean;
   error?: string;
   fileType: "VIDEO" | "IMAGE"
@@ -57,6 +60,7 @@ export const ImageUpload = ({
           </div>
         </div>
         <div className="col-span-3 flex items-center">
+
           {isError ? (
             <div className="flex items-center space-x-2 text-destructive">
               <AlertCircle size={18} />
@@ -68,9 +72,8 @@ export const ImageUpload = ({
               <span className="text-xs">Done</span>
             </div>
           ) : (
-            <div className="flex items-center space-x-2 text-muted">
-              <Loader2 size={18} className="animate-spin" />
-              <span className="text-xs">Uploading...</span>
+            <div className="flex min-w-20 items-center space-x-2 text-muted">
+              <UploadProgressBar progressWidth={progress} />
             </div>
           )}
         </div>
