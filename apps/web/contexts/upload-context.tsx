@@ -151,7 +151,7 @@ export const UploadProvider = ({
         imageURL: imageUrl,
         fileSize: BigInt(file.size),
         fileType: file.type,
-        encryptedToken: encryptedToken, //
+        encryptedToken: encryptedToken,
         uploadedAt: new Date(),
         createdAt: new Date(),
         isLocal: true,
