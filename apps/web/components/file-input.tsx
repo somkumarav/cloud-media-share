@@ -1,18 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
 import { HardDriveUpload, Upload } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import ImageUpload from "@/components/image-upload";
+import { ImageUpload } from "@/components/image-upload";
 import { acceptedFileType } from "@repo/utils";
 import { useUploadContext } from "@/contexts/upload-context";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 type Files = {
   isUploaded: boolean;
   isError: boolean;
   file: File;
   error?: string;
+  preview: string;
+  fileType: "VIDEO" | "IMAGE"
 };
 
 export const FileInput = () => {
@@ -21,7 +24,11 @@ export const FileInput = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [warning, setWarning] = useState<string | null>(null);
-  const noInput = files.length <= 0;
+  const [isDragging, setIsDragging] = useState(false);
+
+  const noInput = files.length === 0;
+  const uploadedCount = files.filter((f) => f.isUploaded).length;
+  const errorCount = files.filter((f) => f.isError).length;
 
   useEffect(() => {
     if (!warning) return;
@@ -40,6 +47,8 @@ export const FileInput = () => {
               file: item.file,
               isUploaded: true,
               isError: item.isError,
+              fileType: item.fileType,
+              preview: item.preview
             }
             : item
         )
@@ -54,6 +63,8 @@ export const FileInput = () => {
                 isUploaded: item.isUploaded,
                 isError: true,
                 error: error.message,
+                fileType: item.fileType,
+                preview: item.preview
               }
               : item
           )
@@ -80,12 +91,18 @@ export const FileInput = () => {
     const validFiles = validateFiles(fileList);
     const uniqueFiles = getUniqueFiles(validFiles);
 
-    if (uniqueFiles.length === 0) return;
+    if (uniqueFiles.length === 0) {
+      if (validFiles.length === 0) return;
+      setWarning("These files are already in the upload queue");
+      return;
+    }
 
     const newFileStates: Files[] = uniqueFiles.map((file) => ({
       file,
+      preview: URL.createObjectURL(file),
       isUploaded: false,
       isError: false,
+      fileType: file.type.startsWith("video") ? "VIDEO" : "IMAGE"
     }));
 
     setFiles((prev) => [...prev, ...newFileStates]);
@@ -95,7 +112,11 @@ export const FileInput = () => {
   const validateFiles = (fileList: FileList): File[] => {
     return Array.from(fileList).filter((file) => {
       if (!acceptedFileType.includes(file.type)) {
-        setWarning("Invalid file type");
+        setWarning("Some files were skipped due to invalid file type");
+        return false;
+      }
+      if (file.size > 100 * 1024 * 1024) {
+        setWarning("Some files exceed the 100MB size limit");
         return false;
       }
       return true;
@@ -113,141 +134,133 @@ export const FileInput = () => {
     );
   };
 
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const fileList = e.dataTransfer.files;
+    if (fileList) handleFileChange(fileList);
+  };
+
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
-      <Button
-        onClick={() => {
-          setShowDialog(true);
-        }}
-      >
-        <Upload strokeWidth={3} />
-        Upload photos
+      <Button onClick={() => setShowDialog(true)}>
+        <Upload size={20} strokeWidth={2.5} />
+        Upload Media
       </Button>
-      <DialogContent className='max-w-[1000px] flex flex-col items-center'>
-        <DialogTitle className='text-2xl pt-2'>Upload to cloud ☁️</DialogTitle>
-        <form
-          onSubmit={(e) => e.preventDefault()}
-          className='flex flex-col h-full items-center min-w-[66%] justify-start border-2 border-dashed rounded-lg'
-        >
+
+      <DialogContent className="max-w-4xl w-[95vw] flex flex-col max-h-[90vh]">
+        <DialogHeader>
+          <DialogTitle>
+            Upload to cloud
+          </DialogTitle>
+        </DialogHeader>
+        <DialogDescription>
+          {files.length > 0 && (
+            <p className="text-sm text-muted mt-1">
+              {uploadedCount} of {files.length} uploaded
+              {errorCount > 0 && ` • ${errorCount} failed`}
+            </p>
+          )}
+        </DialogDescription>
+        <div>
           <div
-            className='flex w-full '
-            onDrop={(e) => {
-              e.preventDefault();
-              const fileList = e.dataTransfer.files;
-              if (fileList) handleFileChange(fileList);
-            }}
-            onDragOver={(e) => e.preventDefault()}
+            className={cn(
+              "border-2 border-dashed border-muted rounded-lg transition-all",
+              isDragging
+                ? "border-accent-foreground bg-muted scale-[0.98]"
+                : warning
+                  ? "border-destructive bg-destructive-background"
+                  : "border-muted-background/50 hover:border-accent-foreground/50"
+            )}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
           >
             <label
-              htmlFor='dropzone-file'
+              htmlFor="dropzone-file"
               className={cn(
-                "relative min-h-[250px] w-full flex items-center justify-center rounded-lg  transition-all cursor-pointer",
-                warning
-                  ? "bg-destructive/20"
-                  : "bg-accent-background hover:bg-accent-foreground/20",
-                { "border-b rounded-b-none": !noInput }
+                "flex flex-col items-center justify-center py-12 px-6 cursor-pointer transition-colors",
+                noInput ? "min-h-[300px]" : "min-h-[180px]"
               )}
             >
-              <div className='flex flex-col items-center'>
-                <HardDriveUpload
-                  size={50}
-                  className={cn(
-                    "mb-4",
-                    warning ? "text-destructive" : "text-accent-foreground"
-                  )}
-                />
-                <p
-                  className={cn(
-                    "mb-2 text-sm text-gray-500",
-                    warning ? "text-destructive" : "text-accent-foreground"
-                  )}
-                >
-                  {warning ? (
-                    <p className='text-xl'>{warning}</p>
-                  ) : (
-                    <>
-                      <span className='font-semibold'>Click to upload</span> or
-                      drag and drop
-                    </>
-                  )}
-                </p>
+              <HardDriveUpload
+                size={48}
+                className={cn(
+                  "mb-4 transition-colors",
+                  warning
+                    ? "text-destructive"
+                    : isDragging
+                      ? "text-accent-foreground"
+                      : "text-muted"
+                )}
+                strokeWidth={1.5}
+              />
 
-                <input
-                  multiple
-                  onChange={(e) => {
-                    const fileList = e.target.files;
-                    if (fileList) handleFileChange(fileList);
-                  }}
-                  accept={acceptedFileType.join(', ')}
-                  id='dropzone-file'
-                  type='file'
-                  className='hidden'
-                />
-              </div>
+              {warning ? (
+                <div className="text-center">
+                  <p className="text-destructive font-medium mb-2">{warning}</p>
+                  <p className="text-sm text-muted">Try uploading different files</p>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <p className="text-foreground mb-2">
+                    <span className="font-semibold">Click to upload</span> or drag and
+                    drop
+                  </p>
+                  <p className="text-sm text-muted">
+                    Photos and videos up to 100MB
+                  </p>
+                </div>
+              )}
+
+              <input
+                multiple
+                onChange={(e) => handleFileChange(e.target.files)}
+                accept={acceptedFileType.join(", ")}
+                id="dropzone-file"
+                type="file"
+                className="hidden"
+              />
             </label>
           </div>
-          {noInput ? null : (
-            <div className='flex flex-col w-full'>
-              <div className='max-h-[250px] max-w-[650px] overflow-y-auto no-scrollbar'>
-                <table className='min-w-full divide-y'>
-                  <thead className='bg-muted-background sticky top-0 z-10'>
-                    <tr>
-                      <th
-                        scope='col'
-                        className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider'
-                      >
-                        Preview
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider'
-                      >
-                        Name
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider'
-                      >
-                        Size
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider'
-                      >
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className='relative divide-y max-h-[250px]'>
-                    {files.map((file, index) => (
-                      <ImageUpload
-                        key={index}
-                        isUploaded={file.isUploaded}
-                        isError={file.isError}
-                        error={file.error}
-                        imageURL={URL.createObjectURL(file.file)}
-                        name={file.file.name}
-                        size={BigInt(file.file.size)}
-                      />
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-        </form>
-        <div className='flex w-full justify-end'>
+        </div>
+        <div className="max-h-[400px] overflow-y-scroll space-y-2">
+          {files.map((file, index) => (
+            <ImageUpload
+              key={`${file.file.name}-${index}`}
+              name={file.file.name}
+              size={file.file.size}
+              isUploaded={file.isUploaded}
+              isError={file.isError}
+              error={file.error}
+              preview={URL.createObjectURL(file.file)}
+              fileType={file.fileType}
+            />
+          ))}
+        </div>
+        <DialogFooter>
           <Button
-            size='lg'
             onClick={() => {
-              setShowDialog(false);
-              setFiles([]);
+              if (!isUploading) {
+                setShowDialog(false);
+                setTimeout(() => setFiles([]), 300);
+              }
             }}
             disabled={isUploading}
           >
-            Close
+            {isUploading ? "Uploading..." : "Close"}
           </Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
