@@ -77,7 +77,7 @@ const IndividualImage = (image: TProps) => {
           />
           <DeleteImageButton mediaId={image.mediaId} />
         </div>
-        {image.fileType.startsWith("VIDEO") ?
+        {image.fileType.startsWith("video") ?
           <video
             controls
             controlsList="nodownload noremoteplayback"
@@ -85,8 +85,8 @@ const IndividualImage = (image: TProps) => {
             muted
             autoPlay
             preload="metadata"
+            src={image.imageURL}
           >
-            <source src={image.imageURL} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           : < Image
