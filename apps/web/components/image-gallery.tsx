@@ -13,8 +13,8 @@ export const ImageGallery = () => {
     <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
       {allImages.map((image) => (
         <IndividualImage
-          key={image.id}
           {...{
+            key: image.id,
             id: image.id,
             mediaId: image.mediaId,
             createdAt: image.createdAt,
