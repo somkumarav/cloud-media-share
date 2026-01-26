@@ -43,10 +43,12 @@ async function pullAndLogJobs() {
         const metadata = await image.metadata();
 
         const thumbnailImage = await image
+          .rotate()
           .resize({ height: 550, width: 550 })
           .webp()
           .toBuffer();
         const smallImage = await image
+          .rotate()
           .resize({ height: 600, width: 600 })
           .webp()
           .toBuffer();
