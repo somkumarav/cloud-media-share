@@ -51,7 +51,7 @@ export function DownloadAsZipButton({
         </div>
       ) : (
         <>
-          <Download className='w-4 h-4' />
+          <Download strokeWidth={2.5} className='w-4 h-4' />
           Download All
         </>
       )}
