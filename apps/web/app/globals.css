@@ -1,25 +1,156 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
 
-@layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-background: #0e1011;
+  --color-background-secondary: #28282c;
+
+  --color-foreground: #e6e6e6;
+
+  --color-accent: #173f35;
+  --color-accent-foreground: #68cc55;
+  --color-accent-background: #172217;
+
+  --color-muted: #7a7a7a;
+  --color-muted-foreground: #eaa09c;
+  --color-muted-background: #222222;
+
+  --color-destructive: #c52828;
+  --color-destructive-background: #c5282840;
+
+  --color-caution: #f5a623;
+  --color-caution-background: #f5a62340;
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --space-*: initial;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.25rem;
+  --space-5: 1.5rem;
+
+  --radius-*: initial;
+  --radius-none: 0rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-full: 1000rem;
+
+  --animate-*: initial;
+  --animate-slide: slide 6s linear infinite backwards;
+  --animate-spin: spin 1s linear infinite;
+  --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-fade-in: fade-in 3000ms ease forwards;
+  --animate-top-fade-in: top-fade-in 1000ms ease forwards;
+
+  @keyframes slide {
+    0% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    5%,
+    20% {
+      /* Quickly slide in and stay */
+      transform: translateY(0);
+      opacity: 1;
+    }
+    25%,
+    100% {
+      /* Slide out and stay out for the rest of the 6s loop */
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
+  @keyframes top-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes pulse {
+    50% {
+      opacity: 0.5;
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility no-scrollbar {
+  &::-webkit-scrollbar {
     display: none;
   }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
-  .text-gradient {
-    background: linear-gradient(
-      to right bottom,
-      rgb(255, 255, 255) 30%,
-      rgba(255, 255, 255, 0.38)
-    );
-    background-clip: text;
-    color: transparent;
-  }
+@utility text-gradient {
+  background: linear-gradient(
+    to right bottom,
+    rgb(255, 255, 255) 30%,
+    rgba(255, 255, 255, 0.38)
+  );
+  background-clip: text;
+  color: transparent;
 }
 
 @layer base {

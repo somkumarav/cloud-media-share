@@ -11,22 +11,24 @@ export const HeroText = () => {
         <h1 className='flex items-center'>
           <p className='hidden md:block pr-1'>
             Tap on create new
-            <RoughHighlightedText options={{type:"underline", color:'#68cc55'}}>
-             {" album "} 
+            <RoughHighlightedText
+              options={{ type: "underline", color: "#68cc55" }}
+            >
+              {" album "}
             </RoughHighlightedText>
             to create an album of your recent
           </p>
-          <span className='relative ml-1 h-[1.1rem] md:h-[1.5rem] w-28 md:w-36 overflow-hidden translate-y-[0.2rem]'>
-            <span className='absolute h-full w-full -translate-y-full animate-slide text-accent-foreground leading-none'>
+          <span className='relative ml-1 h-[1.1rem] md:h-[1.5rem] w-28 md:w-36 overflow-hidden inline-block align-bottom'>
+            <span className='absolute inset-0 animate-slide text-accent-foreground [animation-delay:0s]'>
               Trip 🏕️
             </span>
-            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:1.5s]'>
+            <span className='absolute inset-0 animate-slide text-accent-foreground [animation-delay:1.5s]'>
               Wedding 💍
             </span>
-            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:3s]'>
+            <span className='absolute inset-0 animate-slide text-accent-foreground [animation-delay:3s]'>
               Party 🪩
             </span>
-            <span className='absolute h-full w-full -translate-y-full animate-slide leading-none text-accent-foreground [animation-delay:4.5s]'>
+            <span className='absolute inset-0 animate-slide text-accent-foreground [animation-delay:4.5s]'>
               Get Together 🚀
             </span>
           </span>

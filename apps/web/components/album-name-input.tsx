@@ -52,7 +52,7 @@ export const AlbumNameInput = (props: {
         type='text'
         {...form.register("name")}
         className={cn(
-          "bg-background text-white outline-none text-4xl",
+          "bg-background text-white outline-hidden text-4xl",
           `w-[${form.watch("name").length * 5}px]`
         )}
       />

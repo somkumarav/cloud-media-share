@@ -117,7 +117,7 @@ const IndividualImage = (image: TProps) => {
             }
           />
           <DropdownMenu modal={false}>
-            <DropdownMenuTrigger className='outline-none'>
+            <DropdownMenuTrigger className='outline-hidden'>
               <EllipsisVertical
                 size={16}
                 className='hover:text-accent-foreground transition-colors'
