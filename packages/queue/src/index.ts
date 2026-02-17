@@ -2,7 +2,7 @@ import "dotenv/config";
 import * as ioredis from "ioredis";
 
 export const redis = new ioredis.Redis(
-  process.env.REDIS_URL ?? "redis://localhost:6379"
+  process.env.REDIS_URL ?? "redis://localhost:6379",
 );
 
 // export const redis = new ioredis.Redis({

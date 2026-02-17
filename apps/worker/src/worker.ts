@@ -32,7 +32,7 @@ async function pullAndLogJobs() {
         });
 
         const getImageFromBucket = new GetObjectCommand({
-          Bucket: "test",
+          Bucket: process.env.BUCKET,
           Key: mediaData?.storageBucketKey,
         });
 
@@ -54,13 +54,13 @@ async function pullAndLogJobs() {
           .toBuffer();
 
         const thumbnailImageCommand = new PutObjectCommand({
-          Bucket: "test",
+          Bucket: process.env.BUCKET,
           Key: `${mediaData?.album.encryptedToken}/thumbnail-${mediaData?.filename}`,
           ContentType: mediaData?.mimeType,
           Body: thumbnailImage,
         });
         const smallImageCommand = new PutObjectCommand({
-          Bucket: "test",
+          Bucket: process.env.BUCKET,
           Key: `${mediaData?.album.encryptedToken}/small-${mediaData?.filename}`,
           ContentType: mediaData?.mimeType,
           Body: smallImage,

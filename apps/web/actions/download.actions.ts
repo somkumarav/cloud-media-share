@@ -17,7 +17,7 @@ export async function downloadImage(imageId: number) {
   }
 
   const command = new GetObjectCommand({
-    Bucket: "test",
+    Bucket: process.env.BUCKET,
     Key: image.storageBucketKey,
     ResponseContentDisposition: `attachment; filename="${image.originalName}"`,
     ResponseContentType: image.mimeType,
@@ -47,7 +47,7 @@ export async function downloadAlbumAsZip(encryptedToken: string) {
   const downloadURLs = await Promise.all(
     album.media.map(async (image) => {
       const command = new GetObjectCommand({
-        Bucket: "test",
+        Bucket: process.env.BUCKET,
         Key: image.storageBucketKey,
       });
 
@@ -59,7 +59,7 @@ export async function downloadAlbumAsZip(encryptedToken: string) {
         imageURL: signedURL,
         filename: image.originalName,
       };
-    })
+    }),
   );
 
   return {

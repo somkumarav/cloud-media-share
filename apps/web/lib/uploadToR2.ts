@@ -5,7 +5,7 @@ export const uploadToR2 = async (file: File, fileName: string) => {
   const buffer = await file.arrayBuffer();
 
   const command = new PutObjectCommand({
-    Bucket: "test",
+    Bucket: process.env.BUCKET,
     Key: fileName,
     Body: Buffer.from(buffer),
     ContentType: file.type,

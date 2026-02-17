@@ -26,9 +26,10 @@ export const getSignedURL = withServerActionAsyncCatcher<
   if (!validatedData.success) {
     throw new ErrorHandler("Data validation failed", "BAD_REQUEST");
   }
-  const { fileName, encryptedToken, fileSize, mimeType, checksum } = validatedData.data;
+  const { fileName, encryptedToken, fileSize, mimeType, checksum } =
+    validatedData.data;
   const decryptedAlbumId = getDecryptedId(encryptedToken);
-  const isVideo = mimeType.startsWith("video/")
+  const isVideo = mimeType.startsWith("video/");
 
   const albumContent = await prisma.media.groupBy({
     by: ["albumId"],
@@ -45,7 +46,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
   if (BigInt(totalFileSize) + BigInt(fileSize) > GIGABYTE) {
     throw new ErrorHandler(
       "1GB size limit exceeded",
-      "INSUFFICIENT_PERMISSIONS"
+      "INSUFFICIENT_PERMISSIONS",
     );
   }
 
@@ -62,7 +63,7 @@ export const getSignedURL = withServerActionAsyncCatcher<
   }
 
   const command = new PutObjectCommand({
-    Bucket: "test",
+    Bucket: process.env.BUCKET,
     Key: `${encryptedToken}/${fileName}`,
     ContentType: mimeType,
     ContentLength: fileSize,
@@ -150,7 +151,7 @@ export const deleteMedia = withServerActionAsyncCatcher<
 
   mediaData.variants.forEach(async (variant) => {
     const command = new DeleteObjectCommand({
-      Bucket: "test",
+      Bucket: process.env.BUCKET,
       Key: variant.storageBucketKey,
     });
 

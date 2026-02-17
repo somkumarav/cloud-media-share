@@ -5,7 +5,9 @@
     "CLOUDFLARE_ENDPOINT",
     "CLOUDFLARE_ACCESSID",
     "CLOUDFLARE_ACCESSSECRET",
-    "ENCRYPTION_KEY"
+    "ENCRYPTION_KEY",
+    "BUCKET",
+    "REDIS_URL"
   ],
   "tasks": {
     "build": {
