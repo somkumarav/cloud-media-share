@@ -12,7 +12,8 @@
     "db:generate": "pnpm --filter @repo/db db:generate",
     "db:studio": "pnpm --filter @repo/db db:studio",
     "web:start": "pnpm --filter web start",
-    "worker:start": "pnpm --filter worker start"
+    "worker:start": "pnpm --filter worker start",
+    "worker:build": "pnpm --filter worker build"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

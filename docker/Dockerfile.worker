@@ -19,6 +19,8 @@ RUN pnpm install
 COPY ./apps/worker ./apps/worker
 
 RUN pnpm db:generate
-# RUN pnpm build
+RUN pnpm worker:build
+
+USER node
 
 CMD ["pnpm", "worker:start"]
