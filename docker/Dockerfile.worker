@@ -1,5 +1,8 @@
 FROM node:23-alpine
 
+ENV COREPACK_HOME=/home/node/.cache/node/corepack
+RUN mkdir -p $COREPACK_HOME && chown -R node:node /home/node
+
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /usr/src/app
