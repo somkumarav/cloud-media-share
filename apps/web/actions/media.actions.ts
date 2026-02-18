@@ -1,9 +1,10 @@
-'use server'
+"use server";
 import { withServerActionAsyncCatcher } from "../lib/async-catch";
 import { ErrorHandler } from "../lib/error";
 import { ServerActionReturnType } from "../types/api.types";
 import { ChangeMediaNameSchema, TChangeMediaName } from "../types/media.types";
-import prisma, { Media } from "@repo/db";
+import { prisma } from "@repo/db";
+import type { Media } from "@repo/db";
 import { SuccessResponse } from "@/lib/success";
 
 export const editMediaName = withServerActionAsyncCatcher<
@@ -24,7 +25,7 @@ export const editMediaName = withServerActionAsyncCatcher<
     },
   });
 
-  if (!data) throw new ErrorHandler("Media does not exists", "BAD_REQUEST")
+  if (!data) throw new ErrorHandler("Media does not exists", "BAD_REQUEST");
 
   // revalidatePath("/album/[id]", "page");
   return new SuccessResponse("Name changed", 200, data).serialize();

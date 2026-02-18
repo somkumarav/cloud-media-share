@@ -1,6 +1,6 @@
 {
+  "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
-    "outDir": "./dist",
     "rootDir": "./src",
     "module": "ESNext",
     "moduleResolution": "Bundler",

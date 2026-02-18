@@ -1,5 +1,6 @@
 import "dotenv/config";
-import prisma, { VariantType } from "@repo/db";
+import { prisma } from "@repo/db";
+import { VariantType } from "@repo/db";
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import sharp from "sharp";
 import { s3 } from "@repo/utils";

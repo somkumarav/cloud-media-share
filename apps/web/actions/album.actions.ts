@@ -1,6 +1,7 @@
 "use server";
 import { redirect } from "next/navigation";
-import prisma, { Album } from "@repo/db";
+import { prisma } from "@repo/db";
+import { Album } from "@repo/db";
 import { getDecryptedId, GIGABYTE, s3 } from "@repo/utils";
 import { withServerActionAsyncCatcher } from "@/lib/async-catch";
 import { ServerActionReturnType } from "@/types/api.types";

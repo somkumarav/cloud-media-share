@@ -1,25 +1,29 @@
-FROM node:23-alpine
+FROM node:24-alpine
 
 ENV COREPACK_HOME=/home/node/.cache/node/corepack
 RUN mkdir -p $COREPACK_HOME && chown -R node:node /home/node
-
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /usr/src/app
 
-COPY ./packages ./packages
-COPY ./pnpm-lock.yaml ./pnpm-lock.yaml
-COPY ./pnpm-workspace.yaml ./pnpm-workspace.yaml
-COPY ./package.json ./package.json
-COPY ./turbo.json ./turbo.json
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
+
+COPY packages/utils/package.json ./packages/utils/
+COPY packages/db/package.json ./packages/db/
+COPY packages/queue/package.json ./packages/queue/
+COPY packages/typescript-config/package.json ./packages/typescript-config/
+COPY packages/eslint-config/package.json ./packages/eslint-config/
 COPY ./apps/worker/package.json ./apps/worker/package.json
 
 RUN pnpm install
 
+COPY packages ./packages
 COPY ./apps/worker ./apps/worker
 
-RUN pnpm db:generate
-RUN pnpm worker:build
+RUN DATABASE_URL="FUCK PRISMA" pnpm db:generate
+RUN pnpm utils:build
+RUN pnpm queue:build
+RUN pnpm --filter worker build
 
 USER node
 

@@ -7,13 +7,21 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "db:push": "pnpm --filter @repo/db db:push",
-    "db:migrate": "pnpm --filter @repo/db db:migrate",
-    "db:generate": "pnpm --filter @repo/db db:generate",
-    "db:studio": "pnpm --filter @repo/db db:studio",
+
+    "web:build": "pnpm --filter web build",
     "web:start": "pnpm --filter web start",
+
+    "worker:build": "pnpm --filter worker build",
     "worker:start": "pnpm --filter worker start",
-    "worker:build": "pnpm --filter worker build"
+
+    "db:push": "pnpm --filter @repo/db push",
+    "db:migrate": "pnpm --filter @repo/db migrate",
+    "db:generate": "pnpm --filter @repo/db generate",
+    "db:studio": "pnpm --filter @repo/db studio",
+    "db:build":"pnpm --filter @repo/db build",
+
+    "utils:build": "pnpm --filter @repo/utils build",
+    "queue:build": "pnpm --filter @repo/queue build"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

@@ -13,7 +13,7 @@ import { s3 } from "@repo/utils";
 import { GetSignedURLSchema } from "@/types/media.types";
 import { ErrorHandler } from "@/lib/error";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import prisma from "@repo/db";
+import { prisma } from "@repo/db";
 import { getDecryptedId, GIGABYTE } from "@repo/utils";
 import { addToQueue } from "@repo/queue";
 
