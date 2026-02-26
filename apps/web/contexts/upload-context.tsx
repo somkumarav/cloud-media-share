@@ -138,7 +138,6 @@ export const UploadProvider = ({
     });
 
     if (!uploadCompleteResponse.status) {
-      console.log(uploadCompleteResponse);
       throw new Error("Upload completion failed");
     }
 

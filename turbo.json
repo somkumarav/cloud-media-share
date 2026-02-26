@@ -1,23 +1,13 @@
 {
-  "$schema": "https://turborepo.com/schema.json",
+  "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
-  "globalEnv": [
-    "CLOUDFLARE_ENDPOINT",
-    "CLOUDFLARE_ACCESSID",
-    "CLOUDFLARE_ACCESSSECRET",
-    "ENCRYPTION_KEY",
-    "BUCKET",
-    "REDIS_URL",
-    "DATABASE_URL"
-  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**"
-      ]
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": ["DATABASE_URL"]
+
     },
     "lint": {
       "dependsOn": ["^lint"]
@@ -29,15 +19,15 @@
       "cache": false,
       "persistent": true
     },
-    "db:generate": { 
+    "db:generate": {
       "cache": false
-    }, 
-    "db:migrate": { 
-      "cache": false, 
+    },
+    "db:migrate": {
+      "cache": false,
       "persistent": true
-    }, 
-    "db:deploy": { 
+    },
+    "db:deploy": {
       "cache": false
-    } 
+    }
   }
 }

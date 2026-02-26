@@ -69,7 +69,7 @@ const IndividualImage = (image: TProps) => {
   return (
     <div key={image.id} className='rounded-md border border-white/10'>
       <div className='relative aspect-square group'>
-        <div className='z-10 absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-200 flex items-center justify-center space-x-2'>
+        <div className='z-10 absolute inset-0 bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-200 flex items-center justify-center space-x-2'>
           <DownloadImageButton
             imageId={image.id}
             isLocal={image.isLocal}
