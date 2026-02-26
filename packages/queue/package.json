@@ -1,26 +1,21 @@
 {
   "name": "@repo/queue",
-  "version": "1.0.0",
   "type": "module",
-  "keywords": [],
-  "license": "ISC",
+  "private": true,
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
-  "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean"
+    ".": "./index.ts"
   },
   "dependencies": {
-    "@types/node": "^22.15.3",
     "dotenv": "^17.2.1",
-    "ioredis": "^5.3.2",
-    "typescript": "5.8.2"
+    "ioredis": "^5.3.2"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "tsup": "^8.5.1"
+    "@repo/typescript-config": "*",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }
+
+

@@ -1,26 +1,19 @@
 {
   "name": "@repo/utils",
-  "version": "1.0.0",
   "type": "module",
-  "keywords": [],
-  "license": "ISC",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
-  "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean"
+  "private": true,
+   "exports": {
+      ".": "./index.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.670.0",
-    "@types/node": "^22.15.3",
-    "dotenv": "^17.2.1",
-    "typescript": "5.8.2"
+    "dotenv": "^17.2.1"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "tsup": "^8.5.1"
+    "@repo/typescript-config": "*",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }
